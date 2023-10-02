@@ -1,110 +1,112 @@
--- Проверка существования базы данных
-IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE name = 'video_rental')
-BEGIN
-    -- Создание базы данных, если она не существует
+USE master
     CREATE DATABASE video_rental;
-END
+GO
+
+ALTER DATABASE video_rental SET RECOVERY SIMPLE
+GO
 
 USE video_rental;
 
--- Проверка существования таблицы
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'genre' )
-BEGIN
-    -- Создание таблицы, если она не существует
-    CREATE TABLE genre (
-        id int not null PRIMARY KEY IDENTITY(1,1),-- Определение первичного ключа
-        title varchar(30) not null,
-		description varchar(100),
-    );
-END
+CREATE TABLE dbo.Genres (
+        GenreID int not null PRIMARY KEY IDENTITY(1,1),
+        Title varchar(30) not null,
+		"Description" varchar(100)
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'disc_type')
-BEGIN
-    CREATE TABLE disc_type (
-        id int not null PRIMARY KEY IDENTITY(1,1),
-        title varchar(30) not null,
-        description varchar(100),
-    );
-END
+CREATE TABLE dbo."Types" (
+        TypeID int not null PRIMARY KEY IDENTITY(1,1),
+        Title varchar(30) not null,
+        "Description" varchar(100)
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'discs')
-BEGIN
-    CREATE TABLE discs (
-        id int not null PRIMARY KEY IDENTITY(1,1),
-        title varchar(30) not null,
-        creation_year varchar(4),
-		producer int not null,
-		main_actor varchar(90) not null,
-		recording date not null,
-		genre_id int not null,
-		type int not null,
-    );
-END
+CREATE TABLE dbo.Producers (
+		ProduceID int not null PRIMARY KEY IDENTITY(1,1),
+        Manufacturer varchar(30) not null,
+        Country varchar(30)
+		);
 
+CREATE TABLE dbo.Disks (
+        DiskID int not null PRIMARY KEY IDENTITY(1,1),
+        Title varchar(30) not null,
+        CreationYear varchar(4),
+		Producer int not null  ,
+		MainActor varchar(90) not null,
+		Recording date not null,
+		GenreID int not null,
+		DiskType int not null,
+		FOREIGN KEY (Producer) REFERENCES Producers(ProduceID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+		FOREIGN KEY (GenreID) REFERENCES Genres(GenreID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+		FOREIGN KEY (DiskType) REFERENCES "Types"(TypeID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE)
+		;
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'pricelist')
-BEGIN
-    CREATE TABLE pricelist (
-         id int not null PRIMARY KEY IDENTITY(1,1),
-		 disc int not null,
-         price money CHECK(price >0),
-    );
-END
+CREATE TABLE dbo.Pricelist (
+        PriceID int not null PRIMARY KEY IDENTITY(1,1),
+		DiskID int not null,
+        Price money CHECK(price >0),
+		FOREIGN KEY (DiskID) REFERENCES Disks(DiskID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'produce')
-BEGIN
-    CREATE TABLE produce (
-		id int not null PRIMARY KEY IDENTITY(1,1),
-        manufacturer varchar(30) not null,
-        country varchar(30)
-    );
-END
+CREATE TABLE dbo.Positions (
+		PositionID int not null PRIMARY KEY IDENTITY(1,1),
+        Title varchar(30) not null
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'positions')
-BEGIN
-    CREATE TABLE positions (
-		id int not null PRIMARY KEY IDENTITY(1,1),
-        title varchar(30) not null,
-    );
-END
+CREATE TABLE dbo.Staff (
+		StaffID int not null PRIMARY KEY IDENTITY(1,1),
+        Surname varchar(30) not null,
+		"Name" varchar(30) not null,
+		Middlename varchar(30),
+		PositionID int,
+		DateOfEmployment date,
+		FOREIGN KEY (PositionID) REFERENCES Positions(PositionID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'staff')
-BEGIN
-    CREATE TABLE staff (
-		id int not null PRIMARY KEY IDENTITY(1,1),
-        surname varchar(30) not null,
-		name varchar(30) not null,
-		middlename varchar(30),
-		position int,
-		date_of_employment date
-    );
-END
+CREATE TABLE dbo.Clientele (
+		ClientID int not null PRIMARY KEY IDENTITY(1,1),
+        Surname varchar(30) not null,
+		"Name" varchar(30) not null,
+		Middlename varchar(30),
+		Addres varchar(50),
+		Phone varchar(15),
+		Passport varchar(10)
+		);
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'clientele')
-BEGIN
-    CREATE TABLE clientele (
-		id int not null PRIMARY KEY IDENTITY(1,1),
-        surname varchar(30) not null,
-		name varchar(30) not null,
-		middlename varchar(30),
-		addres varchar(50),
-		phone varchar(15),
-		passport varchar(10),
-		position int,
-		date_of_employment date
-    );
-END
+CREATE TABLE dbo.Taking (
+		TakeID int not null PRIMARY KEY IDENTITY(1,1),
+		ClientID int not null,
+        DiskID int not null,
+		DateOfCapture date not null,
+		ReturnDate date not null,
+		PaymentMark bit not null,
+		RefundMark bit not null CONSTRAINT CK_refund_mark CHECK (RefundMark IN (0, 1)),
+		StaffID int not null,
+		FOREIGN KEY (ClientID) REFERENCES Clientele(ClientID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+		FOREIGN KEY (DiskID) REFERENCES Disks(DiskID)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+		FOREIGN KEY (StaffID) REFERENCES Staff(StaffId)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE
+		);
+GO
 
-IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'taking')
-BEGIN
-    CREATE TABLE taking (
-		id int not null PRIMARY KEY IDENTITY(1,1),
-		client_id int not null,
-        disk_id int not null,
-		date_of_capture date not null,
-		return_date date not null,
-		payment_mark bit not null,
-		refund_mark bit not null CONSTRAINT CK_refund_mark CHECK (refund_mark IN (0, 1)),
-		employee_id int not null
-    );
-END
+CREATE VIEW [dbo].[View_AllDisks]
+AS
+SELECT dbo.Disks.DiskID, dbo.Disks."Title" as DiskTitle, dbo.Disks.CreationYear, dbo.Producers.Manufacturer, dbo.Producers.Country, dbo.Disks.MainActor, dbo.Disks.Recording, dbo.Genres.Title AS GenreTitle, dbo."Types".Title AS TypeTitle
+FROM dbo.Disks 
+INNER JOIN dbo.Genres ON dbo.Disks.GenreID = dbo.Genres.GenreID
+INNER JOIN dbo.Producers ON dbo.Disks.Producer = dbo.Producers.ProduceID
+INNER JOIN dbo."Types" ON dbo.Disks.DiskType = dbo."Types".TypeID
+GO
