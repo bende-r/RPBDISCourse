@@ -31,16 +31,16 @@ CREATE TABLE dbo.Disks (
         CreationYear varchar(4),
 		Producer int not null  ,
 		MainActor varchar(90) not null,
-		Recording date not null,
+		RecordingDate date not null,
 		GenreID int not null,
-		DiskType int not null,
+		TypeID int not null,
 		FOREIGN KEY (Producer) REFERENCES Producers(ProduceID)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 		FOREIGN KEY (GenreID) REFERENCES Genres(GenreID)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
-		FOREIGN KEY (DiskType) REFERENCES "Types"(TypeID)
+		FOREIGN KEY (TypeID) REFERENCES "Types"(TypeID)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE)
 		;
@@ -76,8 +76,8 @@ CREATE TABLE dbo.Clientele (
         Surname varchar(30) not null,
 		"Name" varchar(30) not null,
 		Middlename varchar(30),
-		Addres varchar(50),
-		Phone varchar(15),
+		"Address" varchar(50),
+		PhoneNumber varchar(15),
 		Passport varchar(10)
 		);
 
@@ -86,7 +86,7 @@ CREATE TABLE dbo.Taking (
 		ClientID int not null,
         DiskID int not null,
 		DateOfCapture date not null,
-		ReturnDate date not null,
+		DateOfReturn date not null,
 		PaymentMark bit not null,
 		RefundMark bit not null CONSTRAINT CK_refund_mark CHECK (RefundMark IN (0, 1)),
 		StaffID int not null,
