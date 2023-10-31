@@ -9,8 +9,7 @@ namespace VideoRentalModels
         {
         }
 
-        public VideoRentalContext(DbContextOptions<VideoRentalContext> options)
-            : base(options)
+        public VideoRentalContext(DbContextOptions<VideoRentalContext> options) : base(options)
         {
         }
 
@@ -37,18 +36,17 @@ namespace VideoRentalModels
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             ConfigurationBuilder builder = new();
-            // установка пути к текущему каталогу
+
             builder.SetBasePath(Directory.GetCurrentDirectory());
-            // получаем конфигурацию из файла appsettings.json
-            builder.AddJsonFile("D:\\Labs\\3 course\\5 sem\\РПБДИС\\Video_rental\\Video_rental\\VideoRental\\appsettings.json");
-            // создаем конфигурацию
+
+            builder.AddJsonFile("D:\\Labs\\3 course\\5 sem\\РПБДИС\\Video_rental\\Video_rental\\VideoRentalWebApplication\\appsettings.json");
+
             IConfigurationRoot config = builder.Build();
-            // получаем строку подключения
-            //string connectionString = config.GetConnectionString("SqliteConnection");
+
             string connectionString = config.GetConnectionString("SQLConnection");
             _ = optionsBuilder
                 .UseSqlServer(connectionString)
-                //.UseSqlite(connectionString)
+
                 .Options;
             optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
         }

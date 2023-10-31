@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\VideoRentalWebApplication.props" />
+</Project>
