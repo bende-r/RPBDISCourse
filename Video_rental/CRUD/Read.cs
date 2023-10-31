@@ -2,6 +2,12 @@
 
 using VideoRentalModels;
 
+<<<<<<< HEAD
+=======
+using Type = VideoRentalModels.Type;
+
+
+>>>>>>> lab3
 namespace CRUD
 {
     public class Read
@@ -62,7 +68,11 @@ namespace CRUD
             return result.ToList();
         }
 
+<<<<<<< HEAD
         public List<VideoRentalModels.Type> ReadTypes(VideoRentalContext db)
+=======
+        public List<Type> ReadTypes(VideoRentalContext db)
+>>>>>>> lab3
         {
             var result = from res in db.Types
                          select res;
@@ -75,5 +85,9 @@ namespace CRUD
             return result.ToList();
         }
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> lab3

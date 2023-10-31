@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 ﻿
 using VideoRentalModels;
+=======
+﻿using VideoRentalModels;
+>>>>>>> lab3
 
 using Type = VideoRentalModels.Type;
 
@@ -86,5 +90,9 @@ public class Delete
         db.Types.Remove(res.First());
         db.SaveChanges();
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> lab3

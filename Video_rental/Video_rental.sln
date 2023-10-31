@@ -3,11 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoRental", "VideoRental\VideoRental.csproj", "{542B3BB2-8FA5-46E5-8E28-22B6340A994E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoRentalModels", "VideoRentalLib\VideoRentalModels.csproj", "{754C4035-617E-4A5E-85CE-8D39B2D70F95}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUD", "CRUD\CRUD.csproj", "{EF2C7FA9-78B2-4AD3-8DDD-DCD4EAA461F1}"
+=======
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoRentalModels", "Models\VideoRentalModels.csproj", "{DBA31998-337C-44F3-B9DC-737603C7F589}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoRental", "VideoRental\VideoRental.csproj", "{3D857873-4611-48E7-A0CA-6C32BBE5C359}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUD", "CRUD\CRUD.csproj", "{7211AB68-9ACB-4B4C-A406-0EBCF0F91A72}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VideoRentalWebApplication", "VideoRentalWebApplication\VideoRentalWebApplication.csproj", "{47D4B15B-FE68-4300-8DC3-D7D3C17AE39F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{9B816A3B-C784-4A26-9861-498DFD5A4DC0}"
+>>>>>>> lab3
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +27,7 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+<<<<<<< HEAD
 		{542B3BB2-8FA5-46E5-8E28-22B6340A994E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{542B3BB2-8FA5-46E5-8E28-22B6340A994E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{542B3BB2-8FA5-46E5-8E28-22B6340A994E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +40,28 @@ Global
 		{EF2C7FA9-78B2-4AD3-8DDD-DCD4EAA461F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF2C7FA9-78B2-4AD3-8DDD-DCD4EAA461F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF2C7FA9-78B2-4AD3-8DDD-DCD4EAA461F1}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{DBA31998-337C-44F3-B9DC-737603C7F589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA31998-337C-44F3-B9DC-737603C7F589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA31998-337C-44F3-B9DC-737603C7F589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA31998-337C-44F3-B9DC-737603C7F589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D857873-4611-48E7-A0CA-6C32BBE5C359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D857873-4611-48E7-A0CA-6C32BBE5C359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D857873-4611-48E7-A0CA-6C32BBE5C359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D857873-4611-48E7-A0CA-6C32BBE5C359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7211AB68-9ACB-4B4C-A406-0EBCF0F91A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7211AB68-9ACB-4B4C-A406-0EBCF0F91A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7211AB68-9ACB-4B4C-A406-0EBCF0F91A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7211AB68-9ACB-4B4C-A406-0EBCF0F91A72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47D4B15B-FE68-4300-8DC3-D7D3C17AE39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D4B15B-FE68-4300-8DC3-D7D3C17AE39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D4B15B-FE68-4300-8DC3-D7D3C17AE39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D4B15B-FE68-4300-8DC3-D7D3C17AE39F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B816A3B-C784-4A26-9861-498DFD5A4DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B816A3B-C784-4A26-9861-498DFD5A4DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B816A3B-C784-4A26-9861-498DFD5A4DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B816A3B-C784-4A26-9861-498DFD5A4DC0}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> lab3
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

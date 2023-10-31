@@ -1,14 +1,20 @@
 ﻿using System.Collections;
+<<<<<<< HEAD
 using System.Collections.Generic;
+=======
+>>>>>>> lab3
 
 using CRUD;
 
 using VideoRentalModels;
 
+<<<<<<< HEAD
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 using Update = CRUD.Update;
 
+=======
+>>>>>>> lab3
 namespace VideoRental
 {
     class Program
