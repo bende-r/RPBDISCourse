@@ -34,7 +34,6 @@ public class CacheGenre : ICacheGenre
         return _db.Genres.Take(rowCount).ToList();
     }
 
-
     public IEnumerable<Genre> GetGenres(string cacheKey, int rowCount = 20)
     {
         IEnumerable<Genre> carModels = null;

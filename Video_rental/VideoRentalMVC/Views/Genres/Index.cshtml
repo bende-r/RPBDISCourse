@@ -1,0 +1,23 @@
+﻿@model List<VideoRentalModels.Genre>
+
+@{
+    ViewBag.Title = "title";
+}
+
+<p align="center">
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Description</td>
+        </tr>
+        @foreach (var genre in Model)
+        {
+            <tr>
+                <td>@genre.GenreId</td>
+                <td>@genre.Title</td>
+                <td>@genre.Description</td>
+            </tr>
+        }
+    </table>
+</p>

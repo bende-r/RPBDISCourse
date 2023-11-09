@@ -157,7 +157,7 @@
           "dependencies": {
             "Microsoft.Data.SqlClient": {
               "target": "Package",
-              "version": "[5.1.2, )"
+              "version": "[5.2.0-preview3.23201.1, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -270,7 +270,7 @@
           "dependencies": {
             "Microsoft.Data.SqlClient": {
               "target": "Package",
-              "version": "[5.1.2, )"
+              "version": "[5.2.0-preview3.23201.1, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
