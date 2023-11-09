@@ -1,0 +1,24 @@
+﻿@model System.Collections.Generic.List<VideoRentalModels.Type>
+
+@{
+    ViewBag.Title = "title";
+  
+}
+
+<p align="center">
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Description</td>
+        </tr>
+        @foreach (var type in Model)
+        {
+            <tr>
+                <td>@type.TypeId</td>
+                <td>@type.Title</td>
+                <td>@type.Description</td>
+            </tr>
+        }
+    </table>
+</p>

@@ -99,8 +99,6 @@ public class Startup
             });
         });
 
-
-
         app.UseRouting();
 
         app.UseEndpoints(endpoints =>
@@ -371,8 +369,6 @@ public class Startup
 
             await context.Response.WriteAsync(httpString);
         });
-
-
     }
 
     private static void Producers(IApplicationBuilder app)

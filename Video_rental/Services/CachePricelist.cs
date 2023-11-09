@@ -15,7 +15,6 @@ public class CachePricelist : ICachePricelist
         _cache = memoryCache;
     }
 
-
     public IEnumerable<Pricelist> GetPricelist(int rowCount = 20)
     {
         return _db.Pricelists.Take(rowCount).ToList();

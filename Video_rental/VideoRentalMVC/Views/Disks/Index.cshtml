@@ -1,0 +1,34 @@
+﻿@model System.Collections.Generic.List<VideoRentalModels.Disk>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<p align="center">
+    <table border="1">
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>CreationYear</td>
+            <td>Producer</td>
+            <td>Main actor</td>
+            <td>Date of recording</td>
+            <td>Genre title</td>
+            <td>Disk type</td>
+        </tr>
+        @foreach (var disk in Model)
+        {
+            <tr>
+                <td>@disk.DiskId</td>
+                <td>@disk.Title</td>
+                <td>@disk.CreationYear</td>
+                <td>@disk.Producer</td>
+                <td>@disk.MainActor</td>
+                <td>@disk.Recording</td>
+                <td>@disk.GenreId</td>
+                <td>@disk.DiskType</td>
+            </tr>
+        }
+    </table>
+</p>

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace VideoRentalWebApplication.Pages
 {
@@ -14,7 +13,6 @@ namespace VideoRentalWebApplication.Pages
 
         public void OnGet()
         {
-
         }
     }
 }
