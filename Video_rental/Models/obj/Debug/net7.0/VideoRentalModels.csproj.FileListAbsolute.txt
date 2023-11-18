@@ -1,0 +1,14 @@
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\bin\Debug\net7.0\VideoRentalModels.deps.json
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\bin\Debug\net7.0\VideoRentalModels.runtimeconfig.json
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\bin\Debug\net7.0\VideoRentalModels.dll
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\bin\Debug\net7.0\VideoRentalModels.pdb
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.csproj.AssemblyReference.cache
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.GeneratedMSBuildEditorConfig.editorconfig
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.AssemblyInfoInputs.cache
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.AssemblyInfo.cs
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.csproj.CoreCompileInputs.cache
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.dll
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\refint\VideoRentalModels.dll
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.pdb
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\VideoRentalModels.genruntimeconfig.cache
+D:\Labs\3 course\5 sem\РПБДИС\Video_rental\Video_rental\Models\obj\Debug\net7.0\ref\VideoRentalModels.dll

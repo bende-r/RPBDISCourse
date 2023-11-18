@@ -1,0 +1,28 @@
+﻿@model VideoRentalMVC.Models.Entities.UsersViewModel
+
+<form method="post" class="container text-center w-50">
+    <h2>Create</h2>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <p>
+        <label asp-for="Entity.Email"></label><br />
+        <input asp-for="Entity.Email" class="w-75" />
+    <p>
+        <span asp-validation-for="Entity.Email"></span>
+    </p>
+
+    <p>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" class="w-75" />
+    <p>
+        <span asp-validation-for="Password"></span>
+    </p>
+
+    <p>
+        <input type="submit" value="Create" class="w-75 btn btn-success" />
+    </p>
+    <p>
+        <a asp-action="Index" class="btn btn-danger w-75">Back</a>
+    </p>
+</form>
