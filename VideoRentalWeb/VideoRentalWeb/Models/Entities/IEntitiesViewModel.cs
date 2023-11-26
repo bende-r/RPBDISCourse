@@ -1,4 +1,7 @@
-﻿namespace VideoRentalMVC.Models.Entities
+﻿using System.Collections.Generic;
+using VideoRentalWeb.DataModels;
+
+namespace VideoRentalWeb.Models.Entities
 {
     public interface IEntitiesViewModel<T>
     {

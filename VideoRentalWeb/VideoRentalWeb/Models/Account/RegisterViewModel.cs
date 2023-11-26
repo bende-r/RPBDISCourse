@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VideoRentalMVC.Models.Account
+namespace VideoRentalWeb.Models.Account
 {
     public class RegisterViewModel
     {

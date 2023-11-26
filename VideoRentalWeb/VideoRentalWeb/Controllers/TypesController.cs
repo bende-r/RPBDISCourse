@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using Services;
-
-using VideoRentalMVC.Infrastructure;
-using VideoRentalMVC.Models;
-using VideoRentalMVC.Models.Entities;
-using VideoRentalMVC.Models.Filters;
-
 using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Infrastructure;
+using VideoRentalWeb.Models;
+using VideoRentalWeb.Models.Entities;
+using VideoRentalWeb.Models.Filters;
+using VideoRentalWeb.Services;
 
-using Type = VideoRentalModels.Type;
+using Type = VideoRentalWeb.DataModels.Type;
 
-namespace VideoRentalMVC.Controllers;
+namespace VideoRentalWeb.Controllers;
 
-[Authorize]
 public class TypesController : Controller
 {
     private readonly VideoRentalContext _db;

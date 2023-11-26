@@ -1,4 +1,4 @@
-﻿namespace VideoRentalModels
+﻿namespace VideoRentalWeb.DataModels
 {
     public partial class Producer
     {

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.IO;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
-using VideoRentalModels;
-
-using Type = VideoRentalModels.Type;
+using Microsoft.Extensions.Configuration;
 
 namespace VideoRentalWeb.DataModels
 {
@@ -34,7 +32,7 @@ namespace VideoRentalWeb.DataModels
 
             builder.SetBasePath(Directory.GetCurrentDirectory());
 
-            builder.AddJsonFile("D:\\Labs\\3 course\\5 sem\\РПБДИС\\Video_rental\\Video_rental\\VideoRentalWebApplication\\appsettings.json");
+            builder.AddJsonFile("D:\\Labs\\3 course\\5 sem\\РПБДИС\\Video_rental\\VideoRentalWeb\\VideoRentalWeb\\appsettings.json");
 
             IConfigurationRoot config = builder.Build();
 

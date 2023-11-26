@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using Services;
-
-using VideoRentalModels;
-
-using VideoRentalMVC.Infrastructure;
-using VideoRentalMVC.Models;
-using VideoRentalMVC.Models.Entities;
-using VideoRentalMVC.Models.Filters;
-
 using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Infrastructure;
+using VideoRentalWeb.Models;
+using VideoRentalWeb.Models.Entities;
+using VideoRentalWeb.Models.Filters;
+using VideoRentalWeb.Services;
 
 namespace VideoRentalWeb.Controllers;
 
-[Authorize]
 public class GenresController : Controller
 {
     private readonly VideoRentalContext _db;
@@ -86,6 +83,15 @@ public class GenresController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(GenreViewModel model)
     {
+        foreach (var entry in ModelState)
+        {
+            var key = entry.Key; // Название свойства
+            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+            // Далее можно использовать key и errors в соответствии с вашими потребностями
+            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+        }
+
         if (ModelState.IsValid & CheckUniqueValues(model.Entity))
         {
             await _db.Genres.AddAsync(model.Entity);

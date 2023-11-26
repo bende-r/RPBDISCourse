@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-using VideoRentalMVC.Models.Filters;
+using VideoRentalWeb.Models.Filters;
 
-using Type = VideoRentalModels.Type;
+using Type = VideoRentalWeb.DataModels.Type;
 
-namespace VideoRentalMVC.Models.Entities
+namespace VideoRentalWeb.Models.Entities
 {
     public class TypeViewModel : IEntitiesViewModel<Type>
     {

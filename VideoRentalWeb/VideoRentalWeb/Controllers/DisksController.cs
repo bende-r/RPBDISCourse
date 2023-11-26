@@ -1,20 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-using Services;
-
-using VideoRentalModels;
-
-using VideoRentalMVC.Infrastructure;
-using VideoRentalMVC.Models;
-using VideoRentalMVC.Models.Entities;
-using VideoRentalMVC.Models.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Infrastructure;
+using VideoRentalWeb.Models;
+using VideoRentalWeb.Models.Entities;
+using VideoRentalWeb.Models.Filters;
+using VideoRentalWeb.Services;
 
-namespace VideoRentalMVC.Controllers;
+namespace VideoRentalWeb.Controllers;
 
-[Authorize]
 public class DisksController : Controller
 {
     private readonly VideoRentalContext _db;

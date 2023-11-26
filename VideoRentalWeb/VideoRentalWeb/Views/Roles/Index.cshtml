@@ -1,6 +1,7 @@
 ﻿@model RoleViewModel
 
 <div class="container text-center w-50">
+
     <h2>
         <label asp-for="Roles"></label>
     </h2>
@@ -14,24 +15,24 @@
 
     <table class="table table-hover table-sm">
         <thead class="thead-dark text-center">
-            <tr>
-                <th class="w-50"><label asp-for="RoleName"></label></th>
-                <th class="w-25"><label asp-for="Modification"></label></th>
-            </tr>
+        <tr>
+            <th class="w-50"><label asp-for="RoleName"></label></th>
+            <th class="w-25"><label asp-for="Modification"></label></th>
+        </tr>
         </thead>
 
         <tbody>
-            @foreach (var entity in Model.Roles)
-            {
-                <tr>
-                    <td>@entity.Name</td>
-                    <td class="text-center">
-                        <form asp-action="Delete" asp-route-name="@entity.Name" method="post">
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            }
+        @foreach (var entity in Model.Roles)
+        {
+            <tr>
+                <td>@entity.Name</td>
+                <td class="text-center">
+                    <form asp-action="Delete" asp-route-name="@entity.Name" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

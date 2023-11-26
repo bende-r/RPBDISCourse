@@ -1,4 +1,4 @@
-﻿namespace VideoRentalMVC.Models
+﻿namespace VideoRentalWeb.Models
 {
     public class PageViewModel
     {

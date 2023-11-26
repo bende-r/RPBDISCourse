@@ -8,6 +8,7 @@ namespace VideoRentalWeb.Middleware
     public class RoleInitializerMiddleware
     {
         private readonly RequestDelegate _next;
+
         public RoleInitializerMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -20,6 +21,7 @@ namespace VideoRentalWeb.Middleware
             await _next(context);
         }
     }
+
     public static class DbInitializerExtensions
     {
         public static IApplicationBuilder UseRoleInitializer(this IApplicationBuilder builder)
@@ -27,5 +29,4 @@ namespace VideoRentalWeb.Middleware
             return builder.UseMiddleware<RoleInitializerMiddleware>();
         }
     }
-
 }

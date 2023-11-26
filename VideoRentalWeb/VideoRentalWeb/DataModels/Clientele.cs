@@ -1,4 +1,4 @@
-﻿namespace VideoRentalModels
+﻿namespace VideoRentalWeb.DataModels
 {
     public partial class Clientele
     {
@@ -22,6 +22,4 @@
             return ClientId + ", " + Surname + ", " + Name + ", " + Middlename + ", " + Addres + ", " + Phone + ", " + Passport;
         }
     }
-
-
 }

@@ -1,9 +1,11 @@
-﻿@model VideoRentalMVC.Models.Entities.GenreViewModel
+﻿@model VideoRentalWeb.Models.Entities.GenreViewModel
 @{
-    ViewData["Title"] = "Genres";
+    ViewData["Title"] = "Genres"; Layout = "_Layout";
 }
 
 <div class="container w-100">
+@if (User.Identity.IsAuthenticated)
+{
     <h2 class="text-center">
         <label asp-for="Entities"></label>
     </h2>
@@ -14,44 +16,44 @@
         <fieldset class="p-2 float-right">
             <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
                 <label asp-for="GenresFilterViewModel.GenreTitle"></label>
-                <input name="DiskName" value="@Model.GenresFilterViewModel.GenreTitle" />
+                <input name="DiskName" value="@Model.GenresFilterViewModel.GenreTitle"/>
 
-                <input type="submit" value="Filter" class="btn btn-primary" />
+                <input type="submit" value="Filter" class="btn btn-primary"/>
             </form>
         </fieldset>
     </div>
 
     <table class="table table-hover table-sm">
         <thead class="thead-dark text-center text-white">
-            <tr>
-                <th class="w-25">
-                    <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.GenreTitleSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
-                        @Html.DisplayNameFor(e => e.Entity.Title)
-                    </a>
-                </th>
-                <th class="w-25 align-middle">Modification</th>
-            </tr>
+        <tr>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.GenreTitleSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
+                    @Html.DisplayNameFor(e => e.Entity.Title)
+                </a>
+            </th>
+            <th class="w-25 align-middle">Modification</th>
+        </tr>
         </thead>
 
         <tbody>
-            @foreach (var entity in Model.Entities)
-            {
-                <tr>
-                    <td>@entity.Title</td>
-                    <td class="text-center">
-                        <a asp-action="Edit" asp-route-id="@entity.GenreId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@entity.GenreId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
+        @foreach (var entity in Model.Entities)
+        {
+            <tr>
+                <td>@entity.Title</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@entity.GenreId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@entity.GenreId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
-   
+
     <div class="container">
         <div class="float-left w-50">
             <form method="get">
-                <input type="number" name="page" min="1" max="@Model.PageViewModel.TotalPages" value="@Model.PageViewModel.CurrentPage" class="w-25" />
-                <input type="submit" value="Move" class="btn btn-primary" />
+                <input type="number" name="page" min="1" max="@Model.PageViewModel.TotalPages" value="@Model.PageViewModel.CurrentPage" class="w-25"/>
+                <input type="submit" value="Move" class="btn btn-primary"/>
             </form>
         </div>
         <div class="text-right float-right">
@@ -65,4 +67,9 @@
             }
         </div>
     </div>
+}
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}
 </div>

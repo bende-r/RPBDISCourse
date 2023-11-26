@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,41 +10,66 @@ using VideoRentalWeb.Models;
 
 namespace VideoRentalWeb.Controllers
 {
-    [Authorize(Roles = "admin")]
+  
     public class RolesController : Controller
     {
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
 
         public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
-            this.roleManager = roleManager;
-            this.userManager = userManager;
+            this._roleManager = roleManager;
+            this._userManager = userManager;
         }
 
         public IActionResult Index()
         {
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
             RoleViewModel model = new RoleViewModel
             {
-                Roles = roleManager.Roles.ToList()
+                Roles = _roleManager.Roles.ToList()
             };
 
             return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Create()
         {
-            RoleViewModel model = new RoleViewModel();
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
+                RoleViewModel model = new RoleViewModel();
 
             return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(RoleViewModel model)
         {
-            if (!string.IsNullOrEmpty(model.RoleName))
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
             {
-                var result = await roleManager.CreateAsync(new IdentityRole(model.RoleName));
+                if (!string.IsNullOrEmpty(model.RoleName))
+            {
+                var result = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
 
                 if (result.Succeeded)
                 {
@@ -55,34 +83,64 @@ namespace VideoRentalWeb.Controllers
             }
 
             return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(string name)
         {
-            IdentityRole role = await roleManager.FindByNameAsync(name);
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
+                IdentityRole role = await _roleManager.FindByNameAsync(name);
 
             if (role != null)
             {
-                var result = await roleManager.DeleteAsync(role);
+                var result = await _roleManager.DeleteAsync(role);
             }
 
             return RedirectToAction("Index");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Users()
         {
-            return View(userManager.Users.ToList());
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
+                return View(_userManager.Users.ToList());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public async Task<IActionResult> Edit(string userId)
         {
-            User user = await userManager.FindByIdAsync(userId);
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
+                User user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
-                var userRoles = await userManager.GetRolesAsync(user);
-                var roles = roleManager.Roles.ToList();
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var roles = _roleManager.Roles.ToList();
 
                 RoleViewModel model = new RoleViewModel
                 {
@@ -95,27 +153,42 @@ namespace VideoRentalWeb.Controllers
             }
 
             return NotFound();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {
-            User user = await userManager.FindByIdAsync(userId);
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            {
+                User user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
             {
-                var userRoles = await userManager.GetRolesAsync(user);
-                var allRoles = roleManager.Roles.ToList();
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var allRoles = _roleManager.Roles.ToList();
                 var addedRoles = roles.Except(userRoles);
                 var removedRoles = userRoles.Except(roles);
 
-                await userManager.AddToRolesAsync(user, addedRoles);
-                await userManager.RemoveFromRolesAsync(user, removedRoles);
+                await _userManager.AddToRolesAsync(user, addedRoles);
+                await _userManager.RemoveFromRolesAsync(user, removedRoles);
 
                 return RedirectToAction("Users");
             }
 
             return NotFound();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

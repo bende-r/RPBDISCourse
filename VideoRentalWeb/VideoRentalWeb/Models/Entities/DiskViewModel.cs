@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-using VideoRentalModels;
+using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Models.Filters;
 
-using VideoRentalMVC.Models.Filters;
+using Type = VideoRentalWeb.DataModels.Type;
 
-using Type = VideoRentalModels.Type;
-
-namespace VideoRentalMVC.Models.Entities
+namespace VideoRentalWeb.Models.Entities
 {
     public class DiskViewModel : IEntitiesViewModel<Disk>
     {

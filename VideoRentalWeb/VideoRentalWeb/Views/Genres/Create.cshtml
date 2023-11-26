@@ -1,26 +1,39 @@
-﻿@model VideoRentalMVC.Models.Entities.GenreViewModel
+﻿@model VideoRentalWeb.Models.Entities.GenreViewModel
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create"; Layout = "_Layout";
 }
 
 <div class="container text-center w-50">
-    <form method="post">
-        <h2>Create a new entity</h2>
 
-        <div>
-            <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage" />
-        </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post">
+            <h2>Create a new entity</h2>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0" ></div>
+            <div>
+                <input  asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+            </div>
 
-        <p>
-            <label asp-for="Entity.Title"></label><br />
-            <input asp-for="Entity.Title" class="w-75" />
-        <p><span asp-validation-for="Entity.Title" class="text-danger" ></span></p>
+            <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
-        <p>
-            <input type="submit" value="Add" class="btn btn-success w-75" />
+            <p>
+            <label asp-for="Entity.Title"></label><br/>
+            <input asp-for="Entity.Title" class="w-75"/>
+            <p><span asp-validation-for="Entity.Title" class="text-danger"></span></p>
+            
+            <p>
+            <label asp-for="Entity.Description"></label><br/>
+            <input asp-for="Entity.Description" class="w-75"/>
+            <p><span asp-validation-for="Entity.Description" class="text-danger"></span></p>
 
-        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a></p>
-    </form>
+            <p>
+            <input type="submit" value="Add" class="btn btn-success w-75"/>
+
+            <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a></p>
+        </form>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+    }
 </div>

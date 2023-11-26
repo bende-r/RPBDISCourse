@@ -4,6 +4,5 @@ namespace VideoRentalWeb.DataModels
 {
     public partial class User : IdentityUser
     {
-
     }
 }

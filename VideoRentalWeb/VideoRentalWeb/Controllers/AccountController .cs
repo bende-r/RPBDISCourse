@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using VideoRentalMVC.Models.Account;
-
 using VideoRentalWeb.DataModels;
 using VideoRentalWeb.Models.Account;
 
@@ -64,12 +62,9 @@ namespace VideoRentalWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = null)
+        public IActionResult Login()
         {
-            LoginViewModel model = new LoginViewModel
-            {
-                ReturnUrl = returnUrl
-            };
+            LoginViewModel model = new LoginViewModel();
 
             return View(model);
         }
@@ -84,19 +79,13 @@ namespace VideoRentalWeb.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                    {
-                        var claims = new List<Claim> { new Claim(ClaimTypes.Name, model.Login) };
-                        // создаем объект ClaimsIdentity
-                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-                        // установка аутентификационных куки
-                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                        return Redirect(model.ReturnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    var claims = new List<Claim> { new Claim(ClaimTypes.Name, model.Login) };
+                    // создаем объект ClaimsIdentity
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+                    // установка аутентификационных куки
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -107,9 +96,15 @@ namespace VideoRentalWeb.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(LogoutViewModel model)
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");

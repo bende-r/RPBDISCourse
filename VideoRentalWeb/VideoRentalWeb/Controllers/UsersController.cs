@@ -2,9 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using VideoRentalMVC.Models;
-
 using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Models;
 using VideoRentalWeb.Models.Entities;
 
 namespace VideoRentalWeb.Controllers

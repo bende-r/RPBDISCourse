@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VideoRentalMVC.Models.Filters
+namespace VideoRentalWeb.Models.Filters
 {
     public class TypeFilterViewModel
     {

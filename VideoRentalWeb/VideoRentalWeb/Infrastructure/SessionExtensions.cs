@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace VideoRentalMVC.Infrastructure
+namespace VideoRentalWeb.Infrastructure
 {
     public static class SessionExtensions
     {

@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using VideoRentalMVC.Models;
-using VideoRentalMVC.Models.Entities;
-
 using VideoRentalWeb.DataModels;
 
 namespace VideoRentalWeb.Models.Entities

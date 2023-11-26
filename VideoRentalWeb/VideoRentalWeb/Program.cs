@@ -3,23 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Services;
-
 using VideoRentalWeb.DataModels;
+using VideoRentalWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 
+builder.Services.AddDbContext<VideoRentalContext>(options => options.UseSqlServer("Server=DESKTOP-I9HQNLA;Database=video_rental;Trusted_Connection=True;TrustServerCertificate=True"));
 
-builder.Services
-    .AddDbContext<VideoRentalContext>(options => options.UseSqlServer("Server=DESKTOP-I9HQNLA;Database=video_rental;Trusted_Connection=True;TrustServerCertificate=True"));
-
-
-//builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer("Server=DESKTOP-I9HQNLA;Database=video_rental;Trusted_Connection=True;TrustServerCertificate=True"));
-//builder.Services.AddIdentity<User, IdentityRole>()
-//   .AddEntityFrameworkStores<ApplicationContext>();
 builder.Services.AddIdentity<User, IdentityRole>(opts =>
 {
     opts.Password.RequiredLength = 5; // минимальная длина
@@ -34,9 +26,9 @@ builder.Services.AddTransient<CacheProvider>();
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => options.LoginPath = "/login");
+builder.Services.AddMvc();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => options.LoginPath = "/Account/Login");
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -45,7 +37,9 @@ builder.Services.AddControllersWithViews(options =>
         {
             Duration = 262
         });
-}); var app = builder.Build();
+});
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -57,22 +51,24 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
 app.UseAuthentication();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}"
+        );
 
-    );
-
-app.MapControllerRoute(
-    name: "disks",
-    pattern: "{controller=Disks}/"
+        endpoints.MapControllerRoute(
+            name: "Disks",
+            pattern: "disks/{controller = Disks}/{action= Index}/{id?}"
+        );
+    }
 );
-
 
 app.Run();
