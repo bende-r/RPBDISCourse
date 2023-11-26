@@ -1,0 +1,36 @@
+﻿@model VideoRentalWeb.Models.Entities.UsersViewModel 
+
+<div class="container text-center">
+    <h2>
+        <label asp-for="Entities"></label>
+    </h2>
+
+    <p>
+        <div class="container text-left">
+            <a asp-action="Create" class="btn btn-primary">Add a new user</a>
+        </div>
+    </p>
+
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark text-center">
+            <tr>
+                <th class="w-50"><label asp-for="Entity.Email"></label></th>
+                <th class="w-25">Modification</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var entity in Model.Entities)
+            {
+                <tr>
+                    <td>@entity.UserName</td>
+                    <td class="text-center">
+                        <a asp-action="Edit" asp-route-id="@entity.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="ChangePassword" asp-route-id="@entity.Id" class="btn btn-warning">Change password</a>
+                        <a asp-action="Delete" asp-route-id="@entity.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div> 

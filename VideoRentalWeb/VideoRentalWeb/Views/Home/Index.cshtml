@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page"; Layout = "_Layout";
+}
+
+<div class="text-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>Hello, @User.Identity.Name! You are logged in.</p>
+        <p>Welcome to video rental service</p>
+        <ul>
+            <li><p>Links</p></li>
+            <li><a href="/Disks">Disks</a></li>
+            <li><a href="/Genres">Genres</a></li>
+            <li><a href="/Types">Types</a></li>
+            
+            
+
+            <li><a href ="/Account/Login">Login</a></li>
+            <li><a href = "/Account/Register">Register new user</a></li>
+            <li><a href = "Account/logout">Logout</a></li>
+        </ul>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+    }
+</div>

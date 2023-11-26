@@ -1,0 +1,30 @@
+﻿@model VideoRentalWeb.Models.Account.LoginViewModel
+
+<form method="post" class="container text-center w-50">
+        <h2>Login</h2>
+
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <p>
+        <label asp-for="Login"></label><br />
+        <input asp-for="Login" class="w-75" />
+        <p>
+            <span asp-validation-for="Login" class="text-danger"></span>
+        </p>
+
+        <p>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" class="w-75" />
+        <p>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </p>
+
+        <p>
+            <label asp-for="RememberMe"></label>
+            <input asp-for="RememberMe" />
+        </p>
+
+        <p>
+            <input type="submit" value="Login" class="w-75 btn btn-info" />
+        </p>
+</form> 
