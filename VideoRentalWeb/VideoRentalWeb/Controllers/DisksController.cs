@@ -80,17 +80,25 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(DiskViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        foreach (var entry in ModelState)
         {
+            var key = entry.Key; // Название свойства
+            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+            // Далее можно использовать key и errors в соответствии с вашими потребностями
+            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+        }
+        //  if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+       // {
             await _db.Disks.AddAsync(model.Entity);
             await _db.SaveChangesAsync();
 
             _cache.Clean();
 
             return RedirectToAction("Index", "Disks");
-        }
+        //}
 
-        return View(model);
+     //   return View(model);
     }
 
     public async Task<IActionResult> Edit(int id, int page)
@@ -111,8 +119,6 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(DiskViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
             Disk disk = _db.Disks.Find(model.Entity.DiskId);
             if (disk != null)
             {
@@ -129,8 +135,7 @@ public class DisksController : Controller
             {
                 return NotFound();
             }
-        }
-
+            
         return View(model);
     }
 

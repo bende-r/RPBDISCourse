@@ -28,6 +28,22 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Clientele/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZWxlXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Clientele/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZWxlXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Clientele/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZWxlXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Clientele/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZWxlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Disks/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlza3NcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -72,6 +88,54 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Positions/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9zaXRpb25zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Positions/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9zaXRpb25zXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Positions/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9zaXRpb25zXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Positions/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUG9zaXRpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Pricelist/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpY2VsaXN0XENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Pricelist/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpY2VsaXN0XERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Pricelist/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpY2VsaXN0XEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Pricelist/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpY2VsaXN0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Producers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjZXJzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Producers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjZXJzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Producers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjZXJzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Producers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Roles/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -94,6 +158,38 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Staff/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Staff/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Staff/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Staff/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Takings/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFraW5nc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Takings/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFraW5nc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Takings/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFraW5nc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Takings/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFraW5nc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Labs/3 course/5 sem/РПБДИС/Video_rental/VideoRentalWeb/VideoRentalWeb/Views/Types/Create.cshtml]

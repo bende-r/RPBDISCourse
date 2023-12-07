@@ -25,10 +25,14 @@ builder.Services.AddIdentity<User, IdentityRole>(opts =>
 builder.Services.AddTransient<CacheProvider>();
 builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
 builder.Services.AddMvc();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options => options.LoginPath = "/Account/Login");
 builder.Services.AddAuthorization();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "VideoRentalCookie";
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -53,7 +57,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
-
 app.UseAuthorization();
 app.UseAuthentication();
 

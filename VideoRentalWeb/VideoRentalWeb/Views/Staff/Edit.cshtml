@@ -1,0 +1,67 @@
+﻿@model VideoRentalWeb.Models.Entities.StaffViewModel
+@{
+    ViewData["Title"] = "Edit"; Layout = "_Layout";
+}
+
+<div class="container text-center align-middle w-50">
+@if (User.Identity.IsAuthenticated)
+{
+    <form method="post">
+        <div>
+            <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+            <input hidden asp-for="Entity.StaffId" value="@Model.Entity.StaffId"/>
+        </div>
+
+        <h2>Edit entity</h2>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
+
+        <p>
+            <label asp-for="Entity.Surname"></label><br/>
+            <input asp-for="Entity.Surname" class="w-75"/>
+        <p>
+            <span asp-validation-for="Entity.Surname" class="text-danger"></span>
+        </p>
+
+        <p>
+                <label asp-for="Entity.Name"></label><br />
+                <input asp-for="Entity.Name" class="w-75" />
+        <p>
+            <span asp-validation-for="Entity.Name" class="text-danger"></span>
+        </p>
+        
+        <p>
+        <label asp-for="Entity.Middlename"></label><br />
+        <input asp-for="Entity.Middlename" class="w-75" />
+        <p>
+            <span asp-validation-for="Entity.Middlename" class="text-danger"></span>
+        </p>
+        
+        <p>
+        <label asp-for="Entity.PositionId"></label><br />
+        <input asp-for="Entity.PositionId" class="w-75" />
+        <p>
+            <span asp-validation-for="Entity.PositionId" class="text-danger"></span>
+        </p>
+        
+        <p>
+        <label asp-for="Entity.DateOfEmployment"></label><br />
+        <input asp-for="Entity.DateOfEmployment" class="w-75" />
+        <p>
+            <span asp-validation-for="Entity.DateOfEmployment" class="text-danger"></span>
+        </p>
+
+        <p>
+            <input type="submit" value="Save" class="btn btn-success w-75"/>
+        <p>
+            <a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a>
+        </p>
+    </form>
+}
+else
+{
+    <p>You are not logged in. Please 
+        <a href="/Account/Login">login</a>.
+    </p>
+
+}</div>

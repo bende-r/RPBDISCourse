@@ -11,7 +11,6 @@
 
         //Disks
         DiskTitleAsc,
-
         DiskCreationYearAsc,
         DiskProducerAsc,
         MainActorAsc,
@@ -26,17 +25,16 @@
         RecordingDateDesc,
         GenreIdDesc,
         TypeIdDesc,
-        TypeDesc,
 
         //Clientele
         ClientSurnameAsc,
-
         ClientNameAsc,
         ClientMiddlenameAsc,
         ClientAddressAsc,
         ClientPhoneAsc,
-        ClientPhoneDesc,
         ClientPassportAsc,
+
+        ClientPhoneDesc,
         ClientPassportDesc,
         ClientAddressDesc,
         ClientMiddlenameDesc,
@@ -45,14 +43,38 @@
 
         //Types
         TypeTitleAsc,
+        TypeTitleDesc,
 
-        TypeTitleDesc
+        //Positions
+        PositionTitleAsc,
+        PositionTitleDesc,
+
+        //Staff
+        StaffNameAsc,
+        StaffNameDesc,
+        StaffSurnameAsc,
+        StaffSurnameDesc,
+
+        //Pricelist
+        PricelistDiscIdAsc,
+        PricelistDiscIdDesc,
+
+        //Producers
+        ManufacturerAsc,
+        ManufacturerDesc,
+
+        //Takings
+        TakingsDiskIdAsc,
+        TakingsDiskIdDesc,
     }
 
     public class SortViewModel
     {
         //Genre
         public SortState GenreTitleSort { get; set; }
+
+        //Clientele
+        public SortState ClientNameSort { get; set; }
 
         //Disks
         public SortState DiskTitleSort { get; set; }
@@ -67,6 +89,20 @@
         //Types
         public SortState TypeTitleSort { get; set; }
 
+        //Staff
+        public SortState StaffNameSort { get; set; }
+
+        //Positions
+        public SortState PositionNameSort { get; set; }
+
+        //Pricelist
+        public SortState PricelistSort { get; set; }
+
+        //Takings 
+        public SortState TakingsSort { get; set; }
+
+
+
         public SortState CurrentState { get; set; }
 
         public SortViewModel(SortState state)
@@ -74,6 +110,10 @@
             //Genre
             GenreTitleSort = state == SortState.GenreTitleAsc ? SortState.GenreTitleDesc : SortState.GenreTitleAsc;
             CurrentState = state;
+
+            //Clientele
+            ClientNameSort = state ==SortState.ClientNameAsc? SortState.ClientNameDesc: SortState.ClientNameAsc;
+
             //Disks
             DiskTitleSort = state == SortState.DiskTitleAsc ? SortState.DiskTitleDesc : SortState.DiskTitleAsc;
             CurrentState = state;
@@ -95,10 +135,22 @@
 
             DiskTypeIdSort = state == SortState.TypeIdAsc ? SortState.TypeIdDesc : SortState.TypeIdAsc;
             CurrentState = state;
-            //Types
 
+            //Types
             TypeTitleSort = state == SortState.TypeTitleAsc ? SortState.TypeTitleDesc : SortState.TypeTitleAsc;
             CurrentState = state;
+
+            //Staff
+            StaffNameSort = state == SortState.StaffNameAsc? SortState.StaffNameDesc : SortState.StaffNameAsc;
+
+            //Positions
+            PositionNameSort = state ==SortState.PositionTitleAsc? SortState.PositionTitleDesc : SortState.PositionTitleAsc;
+
+            //Pricelist
+            PricelistSort = state ==SortState.PricelistDiscIdAsc? SortState.PricelistDiscIdDesc: SortState.PricelistDiscIdAsc;
+
+            //Takings
+            TakingsSort = state ==SortState.TakingsDiskIdAsc? SortState.TakingsDiskIdDesc: SortState.TakingsDiskIdAsc;
         }
     }
 }

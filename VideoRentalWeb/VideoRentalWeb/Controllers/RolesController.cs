@@ -10,7 +10,7 @@ using VideoRentalWeb.Models;
 
 namespace VideoRentalWeb.Controllers
 {
-  
+
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -27,20 +27,21 @@ namespace VideoRentalWeb.Controllers
             var currentUser = _userManager.GetUserAsync(User).Result;
 
             // Проверка наличия роли Admin у текущего пользователя
-            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
-            {
+            //if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            //{
             RoleViewModel model = new RoleViewModel
             {
                 Roles = _roleManager.Roles.ToList()
             };
 
             return View(model);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
         }
+    
+            //else
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+        
 
         public IActionResult Create()
         {

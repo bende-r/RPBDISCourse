@@ -1,0 +1,73 @@
+﻿@model VideoRentalWeb.Models.Entities.ClienteleViewModel
+@{
+    ViewData["Title"] = "Create"; Layout = "_Layout";
+}
+
+<div class="container text-center w-50">
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post">
+            <h2>Create a new entity</h2>
+
+            <div>
+                <input  asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
+
+            <p>
+                <label asp-for="Entity.Name"></label><br/>
+                <input asp-for="Entity.Name" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Name" class="text-danger"></span>
+            </p>
+            
+            <p>
+                <label asp-for="Entity.Surname"></label><br/>
+                <input asp-for="Entity.Surname" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Surname" class="text-danger"></span>
+            </p>
+            
+            <p>
+            <label asp-for="Entity.Middlename"></label><br/>
+            <input asp-for="Entity.Middlename" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Middlename" class="text-danger"></span>
+            </p>
+            
+            <p>
+            <label asp-for="Entity.Addres"></label><br/>
+            <input asp-for="Entity.Addres" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Addres" class="text-danger"></span>
+            </p>
+            
+            <p>
+            <label asp-for="Entity.Phone"></label><br/>
+            <input asp-for="Entity.Phone" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Phone" class="text-danger"></span>
+            </p>
+            
+            <p>
+            <label asp-for="Entity.Passport"></label><br/>
+            <input asp-for="Entity.Passport" class="w-75"/>
+            <p>
+                <span asp-validation-for="Entity.Passport" class="text-danger"></span>
+            </p>
+
+            <p>
+            <input type="submit" value="Add" class="btn btn-success w-75"/>
+
+            <p>
+                <a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a>
+            </p>
+        </form>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+    }
+</div>

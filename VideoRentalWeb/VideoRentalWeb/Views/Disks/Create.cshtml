@@ -17,16 +17,38 @@
 
         <p>
         <label asp-for="Entity.Title"></label><br/>
-        <input asp-for="Entity.Title" class="w-75"/>
+                <input asp-for="Entity.Title" required="" class="w-75" />
         <p><span asp-validation-for="Entity.Title" class="text-danger"></span></p>
         
+        <p>
+        <label asp-for="Entity.CreationYear"></label><br/>
+                <input asp-for="Entity.CreationYear" required="" class="w-75" />
+        <p><span asp-validation-for="Entity.CreationYear" class="text-danger"></span></p>
+
+        <p>
+        <label asp-for="Entity.Producer"></label><br/>
+                <input asp-for="Entity.Producer" required="" class="w-75" />
+        <p><span asp-validation-for="Entity.Producer" class="text-danger"></span></p>
         
+        <p>
+        <label asp-for="Entity.MainActor"></label><br/>
+                <input asp-for="Entity.MainActor" required="" class="w-75" />
+        <p><span asp-validation-for="Entity.MainActor" class="text-danger"></span></p>
         
+        <p>
+        <label asp-for="Entity.Recording"></label><br/>
+                <input asp-for="Entity.Recording" required=""  class="w-75" />
+        <p><span asp-validation-for="Entity.Recording" class="text-danger"></span></p>
         
-        
-        
-        
-        
+        <p>
+        <label asp-for="Entity.GenreId"></label><br/>
+        <input asp-for="Entity.GenreId" required="" class="w-75"/>
+        <p><span asp-validation-for="Entity.GenreId" class="text-danger"></span></p>
+
+        <p>
+        <label asp-for="Entity.DiskType"></label><br/>
+                <input asp-for="Entity.DiskType" required="" class="w-75" />
+        <p><span asp-validation-for="Entity.DiskType" class="text-danger"></span></p>
 
         <p>
         <input type="submit" value="Add" class="btn btn-success w-75"/>

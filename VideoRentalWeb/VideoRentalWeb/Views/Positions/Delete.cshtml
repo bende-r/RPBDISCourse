@@ -1,0 +1,39 @@
+﻿@model VideoRentalWeb.Models.Entities.PositionsViewModel
+@{
+    ViewData["Title"] = "Delete"; Layout = "_Layout";
+}
+
+<div class="container text-center align-middle w-75">
+@if (User.Identity.IsAuthenticated)
+{
+    <form method="post">
+        <p>
+            <input hidden asp-for="Entity.PositionId" value="@Model.Entity.PositionId"/>
+            <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+        </p>
+
+        @if (!Model.DeleteViewModel.IsDeleted)
+        {
+            <h2>Deletion process</h2>
+
+            <p>
+                <h3>@Model.DeleteViewModel.Message</h3></p>
+
+            <p><input type="submit" class="btn btn-danger w-50" value="Delete"></p>
+            <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary w-50">Back</a></p>
+        }
+        else
+        {
+            <h2>Deletion result</h2>
+
+            <p>
+                <h3>@Model.DeleteViewModel.Message</h3></p>
+
+            <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary w-50">Back</a></p>
+        }
+    </form> }
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}
+</div>

@@ -1,4 +1,6 @@
-﻿namespace VideoRentalWeb.DataModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace VideoRentalWeb.DataModels
 {
     public partial class Disk
     {
@@ -15,7 +17,10 @@
         public string MainActor { get; set; } = null!;
         public DateTime Recording { get; set; }
         public int GenreId { get; set; }
+
+        [Required]
         public int DiskType { get; set; }
+        
 
         public virtual Type DiskTypeNavigation { get; set; } = null!;
         public virtual Genre Genre { get; set; } = null!;
