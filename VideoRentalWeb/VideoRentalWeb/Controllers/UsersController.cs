@@ -8,7 +8,7 @@ using VideoRentalWeb.Models.Entities;
 
 namespace VideoRentalWeb.Controllers
 {
-    [Authorize(Roles = "admin")]
+  //  [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly UserManager<User> manager;

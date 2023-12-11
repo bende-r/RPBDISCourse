@@ -16,7 +16,7 @@
         <fieldset class="p-2 float-right">
             <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
                 <label asp-for="TakingsFilterViewModel.DiskId"></label>
-                <input name="DiskName" value="@Model.TakingsFilterViewModel.DiskId"/>
+                    <input name="DiskId" value="@Model.TakingsFilterViewModel.DiskId" />
 
                 <input type="submit" value="Filter" class="btn btn-primary"/>
             </form>

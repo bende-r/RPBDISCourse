@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using VideoRentalWeb.DataModels;
 using VideoRentalWeb.Infrastructure;
@@ -72,7 +73,7 @@ public class TakingsController : Controller
 
     public IActionResult Create(int page)
     {
-        TakingViewModel model = new TakingViewModel()
+        TakingViewModel model = new TakingViewModel(_db.Clienteles.ToList(), _db.Disks.ToList(), _db.Staff.ToList())
         {
             PageViewModel = new PageViewModel { CurrentPage = page }
         };
@@ -83,18 +84,20 @@ public class TakingsController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(TakingViewModel model)
     {
-        foreach (var entry in ModelState)
+        if (ModelState.IsValid)
         {
-            var key = entry.Key; // Название свойства
-            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+            Taking taking = new Taking()
+            {
+                ClientId = model.ClientId,
+                DiskId = model.DiskId,
+                DateOfCapture = model.DateOfCapture,
+                ReturnDate = model.ReturnDate,
+                PaymentMark = model.PaymentMark,
+                RefundMark = model.RefundMark,
+                StaffId = model.StaffId,
+            };
 
-            // Далее можно использовать key и errors в соответствии с вашими потребностями
-            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
-        }
-
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
-            await _db.Takings.AddAsync(model.Entity);
+            await _db.Takings.AddAsync(taking);
             await _db.SaveChangesAsync();
 
             _cache.Clean();
@@ -110,7 +113,12 @@ public class TakingsController : Controller
         Taking taking = await _db.Takings.FindAsync(id);
         if (taking != null)
         {
-            TakingViewModel model = new TakingViewModel();
+            TakingViewModel model = new TakingViewModel()
+            {
+                Clientele = new SelectList(_db.Clienteles.ToList(), "ClientId", "Surname", taking.Client.Surname),
+                Staff = new SelectList(_db.Staff.ToList(), "StaffId", "Surname", taking.Staff.Surname),
+                Disks = new SelectList(_db.Disks.ToList(), "DiskId", "Title", taking.Disk.Title),
+            };
             model.PageViewModel = new PageViewModel { CurrentPage = page };
             model.Entity = taking;
 
@@ -123,12 +131,16 @@ public class TakingsController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(TakingViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
             Taking taking = _db.Takings.Find(model.Entity.TakeId);
             if (taking != null)
             {
-                taking.ClientId = model.Entity.ClientId;
+                taking.ClientId = model.ClientId;
+                taking.DiskId = model.DiskId;
+                taking.DateOfCapture = model.DateOfCapture;
+                taking.ReturnDate = model.ReturnDate;
+                taking.PaymentMark = model.PaymentMark;
+                taking.RefundMark = model.RefundMark;
+                taking.StaffId = model.StaffId;
 
                 _db.Takings.Update(taking);
                 await _db.SaveChangesAsync();
@@ -137,11 +149,6 @@ public class TakingsController : Controller
 
                 return RedirectToAction("Index", "Takings", new { page = model.PageViewModel.CurrentPage });
             }
-            else
-            {
-                return NotFound();
-            }
-        }
 
         return View(model);
     }

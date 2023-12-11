@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
@@ -210,12 +211,20 @@ public class ProducersController : Controller
 
         switch (sortState)
         {
-            case SortState.DiskTitleAsc:
+            case SortState.ManufacturerAsc:
                 producers = producers.OrderBy(g => g.Manufacturer);
                 break;
 
-            case SortState.DiskTitleDesc:
+            case SortState.ManufacturerDesc:
                 producers = producers.OrderByDescending(g => g.Manufacturer);
+                break;
+
+            case SortState.CounrtyAsc:
+                producers = producers.OrderBy(g => g.Country);
+                break;
+
+            case SortState.CounrtyDesc:
+                producers = producers.OrderByDescending(g => g.Country);
                 break;
         }
 

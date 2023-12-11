@@ -2,6 +2,7 @@
 {
     public partial class Pricelist
     {
+        
         public int PriceId { get; set; }
         public int DiskId { get; set; }
         public decimal? Price { get; set; }

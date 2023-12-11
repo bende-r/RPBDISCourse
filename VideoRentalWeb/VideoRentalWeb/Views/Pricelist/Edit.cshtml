@@ -17,11 +17,11 @@
         <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
         <p>
-            <label asp-for="Entity.DiskId"></label><br/>
-            <input asp-for="Entity.DiskId" class="w-75"/>
+            <label asp-for="DiskId"></label><br />
+            <select asp-for="DiskId" class="w-75" asp-items="Model.Disks" ></select>
         <p>
-            <span asp-validation-for="Entity.DiskId" class="text-danger"></span>
-        </p>
+            <span asp-validation-for="DiskId" class="text-danger"></span>
+        </p> 
 
         <p>
                 <label asp-for="Entity.Price"></label><br />

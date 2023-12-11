@@ -7,7 +7,10 @@ namespace VideoRentalWeb.Models.Filters
         [Display(Name = "DiskId")]
         public int DiskId { get; set; }
 
-        [Display(Name = "Price")]
-        public decimal Price { get; set; }
+        [Display (Name = "Title")]
+        public string Title { get; set; }
+
+        //[Display(Name = "Price")]
+        //    public decimal Price { get; set; }
     }
 }

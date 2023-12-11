@@ -17,53 +17,39 @@
         <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
         <p>
-        <label asp-for="Entity.Title"></label><br/>
-        <input  asp-for="Entity.Title" required="" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.Title" class="text-danger"></span>
-        </p>
+        <label asp-for="Title"></label><br/>
+        <input asp-for="Title" required="" class="w-75" />
+        <p><span asp-validation-for="Title" class="text-danger"></span></p>
         
         <p>
-        <label asp-for="Entity.CreationYear"></label><br/>
-        <input asp-for="Entity.CreationYear" required="" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.CreationYear" class="text-danger"></span>
-        </p>
+        <label asp-for="CreationYear"></label><br/>
+        <input asp-for="CreationYear" required="" class="w-75" />
+        <p><span asp-validation-for="CreationYear" class="text-danger"></span></p>
 
         <p>
-        <label asp-for="Entity.Producer"></label><br/>
-        <input asp-for="Entity.Producer" required="" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.Producer" class="text-danger"></span>
-        </p>
+        <label asp-for="ProducerId"></label><br />
+        <select asp-for="ProducerId" class="w-75" asp-items="Model.Producers" ></select>
+        <p><span asp-validation-for="ProducerId" class="text-danger"></span></p> 
         
         <p>
-        <label asp-for="Entity.MainActor"></label><br/>
-        <input asp-for="Entity.MainActor" required="" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.MainActor" class="text-danger"></span>
-        </p>
+        <label asp-for="MainActor"></label><br/>
+        <input asp-for="MainActor" required="" class="w-75" />
+        <p><span asp-validation-for="MainActor" class="text-danger"></span></p>
         
         <p>
-        <label asp-for="Entity.Recording"></label><br/>
-        <input asp-for="Entity.Recording" required=""  class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.Recording" class="text-danger"></span>
-        </p>
+        <label asp-for="Recording"></label><br/>
+        <input asp-for="Recording" required=""  class="w-75" />
+        <p><span asp-validation-for="Recording" class="text-danger"></span></p>
         
         <p>
-        <label asp-for="Entity.GenreId"></label><br/>
-        <input asp-for="Entity.GenreId" required="" class="w-75"/>
-        <p>
-            <span asp-validation-for="Entity.GenreId" class="text-danger"></span>
-        </p>
+        <label asp-for="GenreId"></label><br />
+        <select asp-for="GenreId" class="w-75" asp-items="Model.Genres"></select>
+        <p><span asp-validation-for="GenreId" class="text-danger"></span></p>
 
         <p>
-        <label asp-for="Entity.DiskType"></label><br/>
-        <input asp-for="Entity.DiskType" required="" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.DiskType" class="text-danger"></span>
-        </p>
+        <label asp-for="TypeId"></label><br />
+        <select asp-for="TypeId" class="w-75" asp-items="Model.Types" ></select>
+        <p><span asp-validation-for="TypeId" class="text-danger"></span></p> 
 
         <p>
         <input type="submit" value="Save" class="btn btn-success w-75"/>

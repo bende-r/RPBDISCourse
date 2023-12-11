@@ -4,13 +4,13 @@
 
 <div class="text-center">
     @if (User.Identity.IsAuthenticated)
-    { 
+    {
         <h1>Welcome to video rental service</h1>
         <h3>Hello, @User.Identity.Name! You are logged in.</h3>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
         <table class="table table-striped">
             <tr>
                 <td>
@@ -26,35 +26,45 @@
                     <a href="/Types" class="btn btn-success w-75">Types</a>
                 </td>
             </tr>
-            
-        @if (User.IsInRole("Admin"))
-        {
-            <tr>
-                <td>
-                    <a href="/Clientele" class="btn btn-warning">Clientele</a>
-                </td>
-                <td>
-                    <a href="/Producers" class="btn btn-warning">Producer</a>
-                </td>
-                <td>
-                    <a href="/Takings" class="btn btn-warning">Takings</a>
-                </td>
-                <td>
-                    <a href="/Types" class="btn btn-warning">Types</a>
-                </td>
-                <td>
-                    <a href="/Staff" class="btn btn-warning">Staff</a>
-                </td>
-                <td>
-                    <a href="/Positions" class="btn btn-warning">Positions</a>
-                </td>
-            </tr>
-        }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <tr>
+                    <td>
+                        <a href="/Clientele" class="btn btn-warning">Clientele</a>
+                    </td>
+                    <td>
+                        <a href="/Producers" class="btn btn-warning">Producer</a>
+                    </td>
+                    <td>
+                        <a href="/Takings" class="btn btn-warning">Takings</a>
+                    </td>
+                    <td>
+                        <a href="/Staff" class="btn btn-warning">Staff</a>
+                    </td>
+                    <td>
+                        <a href="/Positions" class="btn btn-warning">Positions</a>
+                    </td>
+                </tr>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <tr>
+                    <td>
+                        <a href="/Roles" class="btn btn-danger">Roles</a>
+                    </td>
+                    <td>
+                        <a href="/Users" class="btn btn-danger">Users</a>
+                    </td>
+                </tr>
+            }
+
         </table>
 
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
 
         <table class="table">
             <tr>
@@ -73,29 +83,7 @@
                 <td>      </td>
                 <td>      </td>
             </tr>
-
         </table>
-
-@*         <ul>
-            <li><a href="/Disks" class="btn btn-success w-75">Disks</a></li>
-            <li><a href="/Pricelist" class="btn btn-success w-75">Pricelist</a></li>
-            <li><a href="/Genres" class="btn btn-success w-75">Genres</a></li>
-            <li><a href="/Types" class="btn btn-success w-75">Types</a></li>
-        </ul>
-           
-        <ul>
-            <li><a href="/Clientele" class="btn btn-warning">Clientele</a></li>
-            <li><a href="/Producers" class="btn btn-warning">Producer</a></li>
-            <li><a href="/Takings" class="btn btn-warning">Takings</a></li>
-            <li><a href="/Types" class="btn btn-warning">Types</a></li>
-            <li><a href="/Staff" class="btn btn-warning">Staff</a></li>
-            <li><a href="/Positions" class="btn btn-warning">Positions</a></li>
-        </ul>
-
-        <a href="/Account/Login" class="btn btn-success w-75">Login</a>
-        <a href="/Account/Register" class="btn btn-warning">Register new user</a>
-        <a href="Account/logout" class="btn btn-danger">Logout</a> *@
-
     }
     else
     {

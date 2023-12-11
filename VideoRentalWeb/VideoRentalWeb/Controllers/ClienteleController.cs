@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
@@ -212,6 +213,13 @@ public class ClienteleController : Controller
 
             case SortState.ClientNameDesc:
                 clienteles = clienteles.OrderByDescending(g => g.Name);
+                break;
+            case SortState.ClientSurnameAsc:
+                clienteles = clienteles.OrderBy(g => g.Surname);
+                break;
+
+            case SortState.ClientSurnameDesc:
+                clienteles = clienteles.OrderByDescending(g => g.Surname);
                 break;
         }
 

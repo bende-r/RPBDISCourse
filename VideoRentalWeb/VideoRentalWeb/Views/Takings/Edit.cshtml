@@ -17,53 +17,47 @@
         <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
         <p>
-        <label asp-for="Entity.ClientId"></label><br/>
-        <input asp-for="Entity.ClientId" class="w-75"/>
+        <label asp-for="ClientId"></label><br />
+        <select asp-for="ClientId" class="w-75" asp-items="Model.Clientele" ></select>
+        <p><span asp-validation-for="ClientId" class="text-danger"></span></p> 
+
         <p>
-            <span asp-validation-for="Entity.ClientId" class="text-danger"></span>
+        <label asp-for="DiskId"></label><br />
+        <select asp-for="DiskId" class="w-75" asp-items="Model.Disks"></select>
+        <p><span asp-validation-for="DiskId" class="text-danger"></span></p>
+
+        <p>
+        <label asp-for="DateOfCapture"></label><br/>
+        <input asp-for="DateOfCapture" class="w-75"/>
+        <p>
+            <span asp-validation-for="DateOfCapture" class="text-danger"></span>
         </p>
             
         <p>
-        <label asp-for="Entity.DiskId"></label><br/>
-        <input asp-for="Entity.DiskId" class="w-75"/>
+        <label asp-for="ReturnDate"></label><br/>
+        <input asp-for="ReturnDate" class="w-75"/>
         <p>
-            <span asp-validation-for="Entity.DiskId" class="text-danger"></span>
+            <span asp-validation-for="ReturnDate" class="text-danger"></span>
         </p>
             
         <p>
-        <label asp-for="Entity.DateOfCapture"></label><br/>
-        <input asp-for="Entity.DateOfCapture" class="w-75"/>
+        <label asp-for="PaymentMark"></label><br/>
+        <input asp-for="PaymentMark" class="w-75"/>
         <p>
-            <span asp-validation-for="Entity.DateOfCapture" class="text-danger"></span>
+            <span asp-validation-for="PaymentMark" class="text-danger"></span>
         </p>
             
         <p>
-        <label asp-for="Entity.ReturnDate"></label><br/>
-        <input asp-for="Entity.ReturnDate" class="w-75"/>
+        <label asp-for="RefundMark"></label><br/>
+        <input asp-for="RefundMark" class="w-75"/>
         <p>
-            <span asp-validation-for="Entity.ReturnDate" class="text-danger"></span>
+            <span asp-validation-for="RefundMark" class="text-danger"></span>
         </p>
             
         <p>
-        <label asp-for="Entity.PaymentMark"></label><br/>
-        <input asp-for="Entity.PaymentMark" class="w-75"/>
-        <p>
-            <span asp-validation-for="Entity.PaymentMark" class="text-danger"></span>
-        </p>
-            
-        <p>
-        <label asp-for="Entity.RefundMark"></label><br/>
-        <input asp-for="Entity.RefundMark" class="w-75"/>
-        <p>
-            <span asp-validation-for="Entity.RefundMark" class="text-danger"></span>
-        </p>
-            
-        <p>
-        <label asp-for="Entity.StaffId"></label><br/>
-        <input asp-for="Entity.StaffId" class="w-75"/>
-        <p>
-            <span asp-validation-for="Entity.StaffId" class="text-danger"></span>
-        </p>
+        <label asp-for="StaffId"></label><br />
+        <select asp-for="StaffId" class="w-75" asp-items="Model.Staff"></select>
+        <p><span asp-validation-for="StaffId" class="text-danger"></span></p>
 
         <p>
             <input type="submit" value="Save" class="btn btn-success w-75"/>

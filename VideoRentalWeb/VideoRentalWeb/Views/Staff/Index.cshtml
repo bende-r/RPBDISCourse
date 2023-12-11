@@ -15,8 +15,8 @@
 
         <fieldset class="p-2 float-right">
             <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
-                <label asp-for="StaffFilterViewModel.Name"></label>
-                <input name="DiskName" value="@Model.StaffFilterViewModel.Name"/>
+                <label asp-for="StaffFilterViewModel.Surname"></label>
+                <input name="Surname" value="@Model.StaffFilterViewModel.Surname"/>
 
                 <input type="submit" value="Filter" class="btn btn-primary"/>
             </form>

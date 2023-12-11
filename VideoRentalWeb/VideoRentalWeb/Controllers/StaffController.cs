@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 using VideoRentalWeb.DataModels;
 using VideoRentalWeb.Infrastructure;
@@ -30,16 +31,16 @@ public class StaffController : Controller
         StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
         if (filter == null)
         {
-            filter = new StaffFilterViewModel() { Name = string.Empty };
+            filter = new StaffFilterViewModel() { Surname = string.Empty };
             HttpContext.Session.Set(FilterKey, filter);
         }
 
-        string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Name}";
+        string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Surname}";
         if (!_cache.TryGetValue(modelKey, out StaffViewModel model))
         {
             model = new StaffViewModel();
 
-            IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Name);
+            IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Surname);
 
             int count = carMarks.Count();
             int pageSize = 10;
@@ -61,7 +62,7 @@ public class StaffController : Controller
         StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
         if (filter != null)
         {
-            filter.Name = filterModel.Name;
+            filter.Surname = filterModel.Surname;
 
             HttpContext.Session.Remove(FilterKey);
             HttpContext.Session.Set(FilterKey, filter);
@@ -72,7 +73,7 @@ public class StaffController : Controller
 
     public IActionResult Create(int page)
     {
-        StaffViewModel model = new StaffViewModel()
+        StaffViewModel model = new StaffViewModel(_db.Positions.ToList())
         {
             PageViewModel = new PageViewModel { CurrentPage = page }
         };
@@ -92,14 +93,24 @@ public class StaffController : Controller
             Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
         }
 
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        if (ModelState.IsValid)
         {
-            await _db.Staff.AddAsync(model.Entity);
+            Staff staff = new Staff()
+            {
+                Surname = model.Surname,
+                Name = model.Name,
+                Middlename = model.Middlename,
+                DateOfEmployment = model.DateOfEmployment,
+                PositionId = model.PositionId,
+            };
+
+
+            await _db.Staff.AddAsync(staff);
             await _db.SaveChangesAsync();
 
             _cache.Clean();
 
-            return RedirectToAction("Index", "Genres");
+            return RedirectToAction("Index", "Staff");
         }
 
         return View(model);
@@ -110,7 +121,10 @@ public class StaffController : Controller
         Staff staff = await _db.Staff.FindAsync(id);
         if (staff != null)
         {
-            StaffViewModel model = new StaffViewModel();
+            StaffViewModel model = new StaffViewModel()
+            {
+                Positions = new SelectList(_db.Positions.ToList(), "PositionId", "Title", staff.Position.Title),
+            };
             model.PageViewModel = new PageViewModel { CurrentPage = page };
             model.Entity = staff;
 
@@ -123,12 +137,26 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(StaffViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        foreach (var entry in ModelState)
+        {
+            var key = entry.Key; // Название свойства
+            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+            // Далее можно использовать key и errors в соответствии с вашими потребностями
+            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+        }
+
+        if (ModelState.IsValid)
         {
             Staff staff = _db.Staff.Find(model.Entity.StaffId);
+            
             if (staff != null)
             {
                 staff.Name = model.Entity.Name;
+                staff.Surname = model.Entity.Surname;
+                staff.Middlename = model.Middlename;
+                staff.DateOfEmployment = model.DateOfEmployment;
+                staff.PositionId = model.PositionId;
 
                 _db.Staff.Update(staff);
                 await _db.SaveChangesAsync();

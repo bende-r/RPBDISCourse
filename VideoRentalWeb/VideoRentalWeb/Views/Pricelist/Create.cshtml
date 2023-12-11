@@ -11,28 +11,31 @@
             <h2>Create a new entity</h2>
 
             <div>
-                <input  asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+                <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
             </div>
 
             <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
-@* 
-            <p>
+            
+     @*        <input type="hidden" asp-for="Entity.DiskId" /> *@
+
+            @* <p>
             <label asp-for="Entity.DiskId"></label><br/>
             <input asp-for="Entity.DiskId" class="w-75"/>
             <p><span asp-validation-for="Entity.DiskId" class="text-danger"></span></p> *@
 
-         @*    <p>
-                <label asp-for="Entity.Disk"></label><br />
-                <select asp-for="Entity.Disk" class="w-75" asp-items="ViewBag.Disks" ></select>
-            <p><span asp-validation-for="Entity.Disk" class="text-danger"></span></p> *@
-            
+             <p>
+                <label asp-for="DiskId"></label><br />
+                <select asp-for="DiskId" class="w-75" asp-items="Model.Disks" ></select>
+            <p><span asp-validation-for="DiskId" class="text-danger"></span></p> 
 
-@Html.DropDownListFor(model => model.Entity.DiskId, new SelectList(Model.Disks, "DiskId", "DiskName"), "Select Disk", new { @class = "form-control" })
+@* @Html.DropDownListFor(model => model.Entity.DiskId, new SelectList(Model.Disks, "DiskId", "Title", Model.Disks.First()), "Select Disk", new { @class = "form-control" }) *@
 
-<p>
-            <label asp-for="Entity.Price"></label><br/>
-            <input asp-for="Entity.Price" class="w-75"/>
-            <p><span asp-validation-for="Entity.Price" class="text-danger"></span></p>
+      @*       <select class="form-control" id="disk" asp-for="Entity.Disk" asp-items="Model.Disks"></select> *@
+
+            <p>
+            <label asp-for="Price"></label><br/>
+            <input asp-for="Price" class="w-75"/>
+            <p><span asp-validation-for="Price" class="text-danger"></span></p>
 
             <p>
             <input type="submit" value="Add" class="btn btn-success w-75"/>

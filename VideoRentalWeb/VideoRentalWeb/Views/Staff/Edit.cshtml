@@ -17,38 +17,36 @@
         <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
         <p>
-            <label asp-for="Entity.Surname"></label><br/>
-            <input asp-for="Entity.Surname" class="w-75"/>
+        <label asp-for="Entity.Surname"></label><br/>
+                <input asp-for="Entity.Surname" class="w-75" />
         <p>
-            <span asp-validation-for="Entity.Surname" class="text-danger"></span>
+                <span asp-validation-for="Entity.Surname" class="text-danger"></span>
         </p>
 
         <p>
-                <label asp-for="Entity.Name"></label><br />
+        <label asp-for="Entity.Name"></label><br />
                 <input asp-for="Entity.Name" class="w-75" />
         <p>
-            <span asp-validation-for="Entity.Name" class="text-danger"></span>
+                <span asp-validation-for="Entity.Name" class="text-danger"></span>
         </p>
         
         <p>
-        <label asp-for="Entity.Middlename"></label><br />
-        <input asp-for="Entity.Middlename" class="w-75" />
+        <label asp-for="Middlename"></label><br />
+        <input asp-for="Middlename" class="w-75" />
         <p>
-            <span asp-validation-for="Entity.Middlename" class="text-danger"></span>
+            <span asp-validation-for="Middlename" class="text-danger"></span>
         </p>
         
         <p>
-        <label asp-for="Entity.PositionId"></label><br />
-        <input asp-for="Entity.PositionId" class="w-75" />
-        <p>
-            <span asp-validation-for="Entity.PositionId" class="text-danger"></span>
-        </p>
+        <label asp-for="PositionId"></label><br />
+        <select asp-for="PositionId" class="w-75" asp-items="Model.Positions" ></select>
+        <p><span asp-validation-for="PositionId" class="text-danger"></span></p> 
         
         <p>
-        <label asp-for="Entity.DateOfEmployment"></label><br />
-        <input asp-for="Entity.DateOfEmployment" class="w-75" />
+        <label asp-for="DateOfEmployment"></label><br />
+        <input asp-for="DateOfEmployment" class="w-75" />
         <p>
-            <span asp-validation-for="Entity.DateOfEmployment" class="text-danger"></span>
+            <span asp-validation-for="DateOfEmployment" class="text-danger"></span>
         </p>
 
         <p>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
@@ -209,11 +210,11 @@ public class GenresController : Controller
 
         switch (sortState)
         {
-            case SortState.DiskTitleAsc:
+            case SortState.GenreTitleAsc:
                 genres = genres.OrderBy(g => g.Title);
                 break;
 
-            case SortState.DiskTitleDesc:
+            case SortState.GenreTitleDesc:
                 genres = genres.OrderByDescending(g => g.Title);
                 break;
         }

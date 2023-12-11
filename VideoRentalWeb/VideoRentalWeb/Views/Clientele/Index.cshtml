@@ -15,8 +15,8 @@
 
         <fieldset class="p-2 float-right">
             <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
-                <label asp-for="ClienteleFilterViewModel.Name"></label>
-                <input name="ClientelName" value="@Model.ClienteleFilterViewModel.Name"/>
+                <label asp-for="ClienteleFilterViewModel.Surname"></label>
+                    <input name="Surname" value="@Model.ClienteleFilterViewModel.Surname" />
 
                 <input type="submit" value="Filter" class="btn btn-primary"/>
             </form>
@@ -24,10 +24,15 @@
     </div>
 
     <table class="table table-hover table-sm">
-        <thead class="thead-dark text-center text-white">
+        <thead class="thead-dark text-center">
         <tr>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.ClientNameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.ClientSurnameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link">
+                    @Html.DisplayNameFor(e => e.Entity.Surname)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.ClientNameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link">
                     @Html.DisplayNameFor(e => e.Entity.Name)
                 </a>
             </th>
@@ -39,11 +44,15 @@
         @foreach (var entity in Model.Entities)
         {
             <tr>
+                <td>@entity.Surname</td>
                 <td>@entity.Name</td>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
                 <td class="text-center">
                     <a asp-action="Edit" asp-route-id="@entity.ClientId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@entity.ClientId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
                 </td>
+            }
             </tr>
         }
         </tbody>

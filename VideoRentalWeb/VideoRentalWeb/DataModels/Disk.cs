@@ -17,14 +17,12 @@ namespace VideoRentalWeb.DataModels
         public string MainActor { get; set; } = null!;
         public DateTime Recording { get; set; }
         public int GenreId { get; set; }
-
-        [Required]
         public int DiskType { get; set; }
-        
-
-        public virtual Type DiskTypeNavigation { get; set; } = null!;
+       
         public virtual Genre Genre { get; set; } = null!;
+        public virtual Type DiskTypeNavigation { get; set; } = null!;
         public virtual Producer ProducerNavigation { get; set; } = null!;
+
         public virtual ICollection<Pricelist> Pricelists { get; set; }
         public virtual ICollection<Taking> Takings { get; set; }
 

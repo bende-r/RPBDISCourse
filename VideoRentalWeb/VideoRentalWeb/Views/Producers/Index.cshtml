@@ -24,11 +24,16 @@
     </div>
 
     <table class="table table-hover table-sm">
-        <thead class="thead-dark text-center text-white">
+        <thead class="thead-dark text-center">
         <tr>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.DiskProducerSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.ProducerManufacturerSortState" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
                     @Html.DisplayNameFor(e => e.Entity.Manufacturer)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.ProducerCountrySortState" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.Country)
                 </a>
             </th>
             <th class="w-25 align-middle">Modification</th>
@@ -40,6 +45,7 @@
         {
             <tr>
                 <td>@entity.Manufacturer</td>
+                <td>@entity.Country</td>
                 <td class="text-center">
                     <a asp-action="Edit" asp-route-id="@entity.ProduceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@entity.ProduceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
