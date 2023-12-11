@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VideoRentalWeb.DataModels;
 using VideoRentalWeb.Infrastructure;
 using VideoRentalWeb.Models;
@@ -69,7 +69,7 @@ public class DisksController : Controller
 
     public IActionResult Create(int page)
     {
-        DiskViewModel model = new DiskViewModel()
+        DiskViewModel model = new DiskViewModel(_db.Producers.ToList(),_db.Genres.ToList(),_db.Types.ToList())
         {
             PageViewModel = new PageViewModel { CurrentPage = page }
         };
@@ -80,9 +80,34 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(DiskViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        foreach (var entry in ModelState)
         {
-            await _db.Disks.AddAsync(model.Entity);
+            var key = entry.Key; // Название свойства
+            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+            // Далее можно использовать key и errors в соответствии с вашими потребностями
+            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+        }
+
+        if (ModelState.IsValid)
+        {
+            Disk newDisk = new Disk()
+            {
+                Title = model.
+                    Title,
+                CreationYear = model.CreationYear,
+
+                Producer = model.ProducerId,
+
+    MainActor = model.MainActor,
+
+    Recording = model.Recording,
+    GenreId = model.GenreId,
+    DiskType = model.TypeId,
+};
+
+            
+            await _db.Disks.AddAsync(newDisk);
             await _db.SaveChangesAsync();
 
             _cache.Clean();
@@ -98,7 +123,12 @@ public class DisksController : Controller
         Disk disk = await _db.Disks.FindAsync(id);
         if (disk != null)
         {
-            DiskViewModel model = new DiskViewModel();
+            DiskViewModel model = new DiskViewModel()
+            {
+                Genres = new SelectList(_db.Genres.ToList(), "GenreId", "Title", disk.Genre.Title),
+                Producers = new SelectList(_db.Producers.ToList(), "ProduceId", "Manufacturer", disk.ProducerNavigation.Manufacturer),
+                Types = new SelectList(_db.Types.ToList(), "TypeId", "Title", disk.DiskTypeNavigation.Title),
+        };
             model.PageViewModel = new PageViewModel { CurrentPage = page };
             model.Entity = disk;
 
@@ -111,8 +141,6 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(DiskViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
             Disk disk = _db.Disks.Find(model.Entity.DiskId);
             if (disk != null)
             {
@@ -129,8 +157,7 @@ public class DisksController : Controller
             {
                 return NotFound();
             }
-        }
-
+            
         return View(model);
     }
 
@@ -191,24 +218,40 @@ public class DisksController : Controller
             return false;
     }
 
-    private IQueryable<Disk> GetSortedEntities(SortState sortState, string carMarkName)
+    private IQueryable<Disk> GetSortedEntities(SortState sortState, string title)
     {
-        IQueryable<Disk> carMarks = _db.Disks.AsQueryable();
+        IQueryable<Disk> disks = _db.Disks.AsQueryable();
 
         switch (sortState)
         {
             case SortState.DiskTitleAsc:
-                carMarks = carMarks.OrderBy(g => g.Title);
+                disks = disks.OrderBy(g => g.Title);
                 break;
 
             case SortState.DiskTitleDesc:
-                carMarks = carMarks.OrderByDescending(g => g.Title);
+                disks = disks.OrderByDescending(g => g.Title);
+                break;
+
+            case SortState.MainActorAsc:
+                disks = disks.OrderBy(g => g.MainActor);
+                break;
+
+            case SortState.MainActorDesc:
+                disks = disks.OrderByDescending(g => g.MainActor);
+                break;
+
+            case SortState.DiskCreationYearAsc:
+                disks = disks.OrderBy(g => g.CreationYear);
+                break;
+
+            case SortState.DiskCreationYearDesc:
+                disks = disks.OrderByDescending(g => g.CreationYear);
                 break;
         }
 
-        if (!string.IsNullOrEmpty(carMarkName))
-            carMarks = carMarks.Where(g => g.Title.Contains(carMarkName)).AsQueryable();
+        if (!string.IsNullOrEmpty(title))
+            disks = disks.Where(g => g.Title.Contains(title)).AsQueryable();
 
-        return carMarks;
+        return disks;
     }
 }

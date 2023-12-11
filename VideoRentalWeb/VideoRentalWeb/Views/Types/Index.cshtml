@@ -16,7 +16,7 @@
             <fieldset class="p-2 float-right">
                 <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
                     <label asp-for="TypeFilterViewModel.TypeTitle"></label>
-                    <input name="DiskName" value="@Model.TypeFilterViewModel.TypeTitle"/>
+                    <input name="TypeTitle" value="@Model.TypeFilterViewModel.TypeTitle" />
 
                     <input type="submit" value="Filter" class="btn btn-primary"/>
                 </form>
@@ -24,10 +24,10 @@
         </div>
 
         <table class="table table-hover table-sm">
-            <thead class="thead-dark text-center text-white">
+            <thead class="thead-dark text-center">
             <tr>
                 <th class="w-25">
-                    <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.GenreTitleSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TypeTitleSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
                         @Html.DisplayNameFor(e => e.Entity.Title)
                     </a>
                 </th>

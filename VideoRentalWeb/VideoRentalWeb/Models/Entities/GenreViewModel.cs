@@ -14,8 +14,6 @@ namespace VideoRentalWeb.Models.Entities
         [Display(Name = "Genre")]
         public Genre Entity { get; set; }
 
-        //    public string GenreTitle { get; set; }
-
         public PageViewModel PageViewModel { get; set; }
         public DeleteViewModel? DeleteViewModel { get; set; }
         public SortViewModel? SortViewModel { get; set; }

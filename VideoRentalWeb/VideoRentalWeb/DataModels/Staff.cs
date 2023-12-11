@@ -11,8 +11,8 @@
         public string Surname { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string? Middlename { get; set; }
-        public int? PositionId { get; set; }
-        public DateTime? DateOfEmployment { get; set; }
+        public int PositionId { get; set; }
+        public DateTime DateOfEmployment { get; set; }
 
         public virtual Position? Position { get; set; }
         public virtual ICollection<Taking> Takings { get; set; }

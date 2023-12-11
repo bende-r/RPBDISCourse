@@ -10,7 +10,8 @@ using VideoRentalWeb.Models;
 
 namespace VideoRentalWeb.Controllers
 {
-  
+
+   // [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -27,20 +28,21 @@ namespace VideoRentalWeb.Controllers
             var currentUser = _userManager.GetUserAsync(User).Result;
 
             // Проверка наличия роли Admin у текущего пользователя
-            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
-            {
+            //if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+            //{
             RoleViewModel model = new RoleViewModel
             {
                 Roles = _roleManager.Roles.ToList()
             };
 
             return View(model);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
         }
+    
+        //else
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+        
 
         public IActionResult Create()
         {
@@ -118,14 +120,14 @@ namespace VideoRentalWeb.Controllers
             var currentUser = _userManager.GetUserAsync(User).Result;
 
             // Проверка наличия роли Admin у текущего пользователя
-            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
-            {
+         //   if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+         //   {
                 return View(_userManager.Users.ToList());
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+         //   }
+         //   else
+         //   {
+         //       return RedirectToAction("Index", "Home");
+         //   }
         }
 
         public async Task<IActionResult> Edit(string userId)
@@ -133,8 +135,8 @@ namespace VideoRentalWeb.Controllers
             var currentUser = _userManager.GetUserAsync(User).Result;
 
             // Проверка наличия роли Admin у текущего пользователя
-            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
-            {
+       //     if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+        //    {
                 User user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
@@ -153,10 +155,10 @@ namespace VideoRentalWeb.Controllers
             }
 
             return NotFound();
-            }
-            else
+    //        }
+      //      else
             {
-                return RedirectToAction("Index", "Home");
+       //         return RedirectToAction("Index", "Home");
             }
         }
 
@@ -166,8 +168,8 @@ namespace VideoRentalWeb.Controllers
             var currentUser = _userManager.GetUserAsync(User).Result;
 
             // Проверка наличия роли Admin у текущего пользователя
-            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
-            {
+     //       if (_userManager.IsInRoleAsync(currentUser, "Admin").Result)
+      //      {
                 User user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
@@ -184,11 +186,11 @@ namespace VideoRentalWeb.Controllers
             }
 
             return NotFound();
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            //}
+            //else
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
         }
     }
 }

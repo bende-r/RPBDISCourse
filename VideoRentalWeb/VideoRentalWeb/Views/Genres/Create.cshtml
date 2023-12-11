@@ -11,7 +11,7 @@
             <h2>Create a new entity</h2>
 
             <div>
-                <input  asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
+                <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage" />
             </div>
 
             <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>

@@ -6,12 +6,10 @@
 
         //Genres
         GenreTitleAsc,
-
         GenreTitleDesc,
 
         //Disks
         DiskTitleAsc,
-
         DiskCreationYearAsc,
         DiskProducerAsc,
         MainActorAsc,
@@ -26,17 +24,16 @@
         RecordingDateDesc,
         GenreIdDesc,
         TypeIdDesc,
-        TypeDesc,
 
         //Clientele
         ClientSurnameAsc,
-
         ClientNameAsc,
         ClientMiddlenameAsc,
         ClientAddressAsc,
         ClientPhoneAsc,
-        ClientPhoneDesc,
         ClientPassportAsc,
+
+        ClientPhoneDesc,
         ClientPassportDesc,
         ClientAddressDesc,
         ClientMiddlenameDesc,
@@ -45,8 +42,33 @@
 
         //Types
         TypeTitleAsc,
+        TypeTitleDesc,
 
-        TypeTitleDesc
+        //Positions
+        PositionTitleAsc,
+        PositionTitleDesc,
+
+        //Staff
+        StaffNameAsc,
+        StaffNameDesc,
+        StaffSurnameAsc,
+        StaffSurnameDesc,
+
+        //Pricelist
+        PricelistDiscIdAsc,
+        PricelistDiscIdDesc,
+        PricelistPriceAsc,
+        PricelistPriceDesc,
+
+        //Producers
+        ManufacturerAsc,
+        ManufacturerDesc,
+        CounrtyAsc,
+        CounrtyDesc,
+
+        //Takings
+        TakingsDiskIdAsc,
+        TakingsDiskIdDesc,
     }
 
     public class SortViewModel
@@ -54,9 +76,12 @@
         //Genre
         public SortState GenreTitleSort { get; set; }
 
+        //Clientele
+        public SortState ClientNameSort { get; set; }
+        public SortState ClientSurnameSort { get; set; }
+
         //Disks
         public SortState DiskTitleSort { get; set; }
-
         public SortState DiskCreationYearSort { get; set; }
         public SortState DiskProducerSort { get; set; }
         public SortState MainActorSort { get; set; }
@@ -64,8 +89,25 @@
         public SortState DiskGenreIdSort { get; set; }
         public SortState DiskTypeIdSort { get; set; }
 
+        //Producer
+        public SortState ProducerManufacturerSortState { get; set; }
+        public SortState ProducerCountrySortState { get; set; }
+
         //Types
         public SortState TypeTitleSort { get; set; }
+
+        //Staff
+        public SortState StaffNameSort { get; set; }
+
+        //Positions
+        public SortState PositionNameSort { get; set; }
+
+        //Pricelist
+        public SortState PricelistDiskIdSort { get; set; }
+        public SortState PricelistPriceSort { get; set; }
+
+        //Takings 
+        public SortState TakingsSort { get; set; }
 
         public SortState CurrentState { get; set; }
 
@@ -74,6 +116,14 @@
             //Genre
             GenreTitleSort = state == SortState.GenreTitleAsc ? SortState.GenreTitleDesc : SortState.GenreTitleAsc;
             CurrentState = state;
+
+            //Clientele
+            ClientNameSort = state == SortState.ClientNameAsc ? SortState.ClientNameDesc : SortState.ClientNameAsc;
+            CurrentState = state;
+
+            ClientSurnameSort = state == SortState.ClientSurnameAsc ? SortState.ClientSurnameDesc : SortState.ClientSurnameAsc;
+            CurrentState = state;
+
             //Disks
             DiskTitleSort = state == SortState.DiskTitleAsc ? SortState.DiskTitleDesc : SortState.DiskTitleAsc;
             CurrentState = state;
@@ -95,9 +145,35 @@
 
             DiskTypeIdSort = state == SortState.TypeIdAsc ? SortState.TypeIdDesc : SortState.TypeIdAsc;
             CurrentState = state;
-            //Types
 
+            //Producers
+            ProducerCountrySortState = state == SortState.CounrtyAsc ? SortState.CounrtyDesc : SortState.CounrtyAsc;
+            CurrentState = state;
+
+            ProducerManufacturerSortState = state == SortState.ManufacturerAsc ? SortState.ManufacturerDesc : SortState.ManufacturerAsc;
+            CurrentState = state;
+
+            //Types
             TypeTitleSort = state == SortState.TypeTitleAsc ? SortState.TypeTitleDesc : SortState.TypeTitleAsc;
+            CurrentState = state;
+
+            //Staff
+            StaffNameSort = state == SortState.StaffNameAsc ? SortState.StaffNameDesc : SortState.StaffNameAsc;
+            CurrentState = state;
+
+            //Positions
+            PositionNameSort = state == SortState.PositionTitleAsc ? SortState.PositionTitleDesc : SortState.PositionTitleAsc;
+            CurrentState = state;
+
+            //Pricelist
+            PricelistDiskIdSort = state == SortState.PricelistDiscIdAsc ? SortState.PricelistDiscIdDesc : SortState.PricelistDiscIdAsc;
+            CurrentState = state;
+
+            PricelistPriceSort = state == SortState.PricelistPriceAsc ? SortState.PricelistPriceDesc : SortState.PricelistPriceAsc;
+            CurrentState = state;
+
+            //Takings
+            TakingsSort = state == SortState.TakingsDiskIdAsc ? SortState.TakingsDiskIdDesc : SortState.TakingsDiskIdAsc;
             CurrentState = state;
         }
     }

@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="VideoRentalWeb.Controllers.AccountController" Collapsed="true">
+    <Position X="6" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAABAAAIAAAABAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Controllers\AccountController .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.ClienteleController" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\ClienteleController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.DisksController" Collapsed="true">
+    <Position X="4.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\DisksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.GenresController" Collapsed="true">
+    <Position X="4.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\GenresController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.HomeController" Collapsed="true">
+    <Position X="4.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAIAAAAQAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.PositionsController" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\PositionsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.PricelistController" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\PricelistController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.ProducersController" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\ProducersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.RolesController" Collapsed="true">
+    <Position X="4.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABCAAAAAAAAAAAAAAAAAgAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\RolesController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.StaffController" Collapsed="true">
+    <Position X="4.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\StaffController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.TakingsController" Collapsed="true">
+    <Position X="6" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\TakingsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.TypesController" Collapsed="true">
+    <Position X="6" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAgAAIAAAQAAIAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\TypesController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Controllers.UsersController" Collapsed="true">
+    <Position X="4.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAgAAAAAAAAAAEAAEAAEACAAFAAAAAAAA=</HashCode>
+      <FileName>Controllers\UsersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Clientele" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAEiBAAAAQAFAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>DataModels\Clientele.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Disk" Collapsed="true">
+    <Position X="8.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIEAECAIAIAAAACAYAAAAAEAgABCCAAA=</HashCode>
+      <FileName>DataModels\Disk.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Genre" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgIEAEAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>DataModels\Genre.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Position" Collapsed="true">
+    <Position X="10.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAEAAAAIAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModels\Position.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Pricelist" Collapsed="true">
+    <Position X="8.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAABAEAAAAAAAAACAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>DataModels\Pricelist.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Producer" Collapsed="true">
+    <Position X="8.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAEAAAAAAAAAAIAAAAIAAAAAAAAIAA=</HashCode>
+      <FileName>DataModels\Producer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Staff" Collapsed="true">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAkCAAAAAQAFACAAAACAAABAAAAAAA=</HashCode>
+      <FileName>DataModels\Staff.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Taking" Collapsed="true">
+    <Position X="10.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAgAAAACEgAAAAAAAICAAAAACAAAAAECAAAQ=</HashCode>
+      <FileName>DataModels\Taking.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.Type" Collapsed="true">
+    <Position X="10.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAEAEAAAAAAAAAAAAAAAoAAAAAAAAAAA=</HashCode>
+      <FileName>DataModels\Type.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.User" Collapsed="true">
+    <Position X="8.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataModels\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.VideoRentalContext" Collapsed="true">
+    <Position X="11.75" Y="7.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAQAQAAAgCAIAAAAAECgQAAAIABAAAACAAAA=</HashCode>
+      <FileName>DataModels\VideoRentalContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.DataModels.ViewAllDisk" Collapsed="true">
+    <Position X="8.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgAAAAAAAAAAABEAIAAAAAAACIIAAAAAAAAABACAAA=</HashCode>
+      <FileName>DataModels\ViewAllDisk.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Infrastructure.SessionExtensions" Collapsed="true">
+    <Position X="8.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Infrastructure\SessionExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Account.LoginViewModel" Collapsed="true">
+    <Position X="12.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAQAAAgAAA=</HashCode>
+      <FileName>Models\Account\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Account.LogoutViewModel" Collapsed="true">
+    <Position X="14.5" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\LogoutViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Account.RegisterViewModel" Collapsed="true">
+    <Position X="14.5" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAACAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Account\RegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.ClienteleViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ClienteleViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.DiskViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACIACAAAAAEAAAAEAAgAAAAA=</HashCode>
+      <FileName>Models\Entities\DiskViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.GenreViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAAAAAAAEAAAAEAAACAAAA=</HashCode>
+      <FileName>Models\Entities\GenreViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.PositionsViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EIAgAAAAAAAAAAAAAAAACAAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\PositionsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.PricelistViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAQAAAACAAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\PricelistViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.ProducersViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAQAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ProducersViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.262" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.StaffViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAAAAAAAUAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\StaffViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.TakingViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAAAAAAAEAAAAEAAgAAAAA=</HashCode>
+      <FileName>Models\Entities\TakingsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.TypeViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAIAAAAAAAACAAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\TypeViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.Entities.UsersViewModel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAABAACAAAAAAAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\UsersViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VideoRentalWeb.Models.DeleteViewModel" Collapsed="true">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIQAAAAA=</HashCode>
+      <FileName>Models\DeleteViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.ErrorViewModel" Collapsed="true">
+    <Position X="14.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ErrorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.PageViewModel" Collapsed="true">
+    <Position X="12.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Models\PageViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.RoleViewModel" Collapsed="true">
+    <Position X="12.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAIAgAAAAgAAAAAEAAAAAA=</HashCode>
+      <FileName>Models\RoleViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Models.SortViewModel" Collapsed="true">
+    <Position X="14.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAgAAABAAAAIEAAACAABBAAAAAAAAAAABAABAA=</HashCode>
+      <FileName>Models\SortViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VideoRentalWeb.Services.CacheProvider" Collapsed="true">
+    <Position X="10" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAQAAAAAIAABABAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Services\CacheProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="VideoRentalWeb.Models.Entities.IEntitiesViewModel&lt;T&gt;" Collapsed="true">
+    <Position X="6" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EIAAAAAAAAAAAAAAAAAACAAAAAAAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\IEntitiesViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="VideoRentalWeb.Models.SortState" Collapsed="true">
+    <Position X="4.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABABACCoCABAQBwgQAAAACAgIKKBQAggGJgQQCgAMAA=</HashCode>
+      <FileName>Models\SortViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
