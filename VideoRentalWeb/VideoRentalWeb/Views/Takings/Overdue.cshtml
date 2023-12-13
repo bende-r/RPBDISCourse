@@ -1,0 +1,56 @@
+﻿@model VideoRentalWeb.Models.Entities.TakingViewModel
+@{
+    ViewData["Title"] = "Details"; Layout = "_Layout";
+}
+
+<div class="container w-50">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <table class="table table-sm">
+            <tbody>
+                @foreach (var entity in Model.Entities)
+                {
+                    <tr>
+                        <td><label asp-for="@entity.Disk.Title"></label></td>
+                        <td>@entity.DiskId</td>
+                        <td>@entity.Disk.Title</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.Client"></label></td>
+                        <td>@entity.ClientId</td>
+                        <td>@entity.Client.Surname</td>
+                        <td>@entity.Client.Name</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.DateOfCapture"></label></td>
+                        <td>@entity.DateOfCapture</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.ReturnDate"></label></td>
+                        <td>@entity.ReturnDate</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.PaymentMark"></label></td>
+                        <td>@entity.PaymentMark</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.RefundMark"></label></td>
+                        <td>@entity.RefundMark</td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="@entity.Staff"></label></td>
+                        <td>@entity.StaffId</td>
+                        <td>@entity.Staff.Surname</td>
+                        <td>@entity.Staff.Name</td>
+                    </tr>
+                    <tr><br/></tr>
+                }
+            </tbody>
+        </table>
+        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-100">Back</a></p>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a></p>
+    }
+</div>

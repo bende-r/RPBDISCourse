@@ -1,0 +1,32 @@
+﻿@model VideoRentalWeb.Models.Entities.TypeViewModel
+@{
+    ViewData["Title"] = "Details"; Layout = "_Layout";
+}
+
+<div class="container w-50">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <table class="table table-sm">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th colspan="2">Detailed description of "@Model.Entity.Title"</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label asp-for="Entity.Title"></label></td>
+                    <td>@Model.Entity.Title</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Description"></label></td>
+                    <td>@Model.Entity.Description</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-100">Back</a></p>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a></p>
+    }
+</div>

@@ -4,72 +4,83 @@
 }
 
 <div class="container w-100">
-@if (User.Identity.IsAuthenticated)
-{
-    <h2 class="text-center">
-        <label asp-for="Entities"></label>
-    </h2>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h2 class="text-center">
+            <label asp-for="Entities"></label>
+        </h2>
 
-    <div class="container">
-        <a asp-action="Create" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary p-2">Add new entity</a>
+        <div class="container">
+            <a asp-action="Create" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary p-2">Add new entity</a>
 
-        <fieldset class="p-2 float-right">
-            <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
-                <label asp-for="StaffFilterViewModel.Surname"></label>
-                <input name="Surname" value="@Model.StaffFilterViewModel.Surname"/>
+            <fieldset class="p-2 float-right">
+                <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
+                    <label asp-for="StaffFilterViewModel.Surname"></label>
+                    <input name="Surname" value="@Model.StaffFilterViewModel.Surname" />
 
-                <input type="submit" value="Filter" class="btn btn-primary"/>
-            </form>
-        </fieldset>
-    </div>
-
-    <table class="table table-hover table-sm">
-        <thead class="thead-dark text-center text-white">
-        <tr>
-            <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.StaffNameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
-                    @Html.DisplayNameFor(e => e.Entity.Name)
-                </a>
-            </th>
-            <th class="w-25 align-middle">Modification</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        @foreach (var entity in Model.Entities)
-        {
-            <tr>
-                <td>@entity.Name</td>
-                <td class="text-center">
-                    <a asp-action="Edit" asp-route-id="@entity.StaffId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@entity.StaffId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-
-    <div class="container">
-        <div class="float-left w-50">
-            <form method="get">
-                <input type="number" name="page" min="1" max="@Model.PageViewModel.TotalPages" value="@Model.PageViewModel.CurrentPage" class="w-25"/>
-                <input type="submit" value="Move" class="btn btn-primary"/>
-            </form>
+                    <input type="submit" value="Filter" class="btn btn-primary" />
+                </form>
+            </fieldset>
         </div>
-        <div class="text-right float-right">
-            @if (Model.PageViewModel.HasPreviousPage)
-            {
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@(Model.PageViewModel.CurrentPage - 1)" class="btn btn-primary">Back</a>
-            }
-            @if (Model.PageViewModel.HasNextPage)
-            {
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@(Model.PageViewModel.CurrentPage + 1)" class="btn btn-primary">Next</a>
-            }
+
+        <table class="table table-hover table-sm">
+            <thead class="thead-dark text-center ">
+                <tr>
+                    <th class="w-25">
+                        <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.StaffSurnameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                            @Html.DisplayNameFor(e => e.Entity.Surname)
+                        </a>
+                    </th>
+                    <th class="w-25">
+                        <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.StaffNameSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                            @Html.DisplayNameFor(e => e.Entity.Name)
+                        </a>
+                    </th>
+                    <th class="w-25">
+                      <p>               </p>
+                    </th>
+                    <th class="w-25 align-middle">Modification</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var entity in Model.Entities)
+                {
+                    <tr>
+                        <td>@entity.Surname</td>
+                        <td>@entity.Name</td>
+                        <td>@entity.Position.Title</td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@entity.StaffId" class="btn btn-info">Details</a>
+                            <a asp-action="Edit" asp-route-id="@entity.StaffId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@entity.StaffId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="container">
+            <div class="float-left w-50">
+                <form method="get">
+                    <input type="number" name="page" min="1" max="@Model.PageViewModel.TotalPages" value="@Model.PageViewModel.CurrentPage" class="w-25" />
+                    <input type="submit" value="Move" class="btn btn-primary" />
+                </form>
+            </div>
+            <div class="text-right float-right">
+                @if (Model.PageViewModel.HasPreviousPage)
+                {
+                    <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@(Model.PageViewModel.CurrentPage - 1)" class="btn btn-primary">Back</a>
+                }
+                @if (Model.PageViewModel.HasNextPage)
+                {
+                    <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@(Model.PageViewModel.CurrentPage + 1)" class="btn btn-primary">Next</a>
+                }
+            </div>
         </div>
-    </div>
-}
-else
-{
-    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
-}
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+    }
 </div>

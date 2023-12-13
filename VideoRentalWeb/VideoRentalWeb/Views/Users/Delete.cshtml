@@ -9,7 +9,7 @@
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        @if (!Model.DeleteViewModel.IsDeleted)
+        @if (Model.DeleteViewModel.IsDeleted)
         {
             <h2>Deletion process</h2>
 

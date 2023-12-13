@@ -44,7 +44,7 @@
         
             <p>
             <label asp-for="DateOfEmployment"></label><br />
-            <input asp-for="DateOfEmployment" class="w-75" />
+                <input asp-for="DateOfEmployment" class="w-75" min="2020-01-01T00:00" />
             <p>
                 <span asp-validation-for="DateOfEmployment" class="text-danger"></span>
             </p>

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
@@ -18,187 +19,286 @@ public class ClienteleController : Controller
     private readonly VideoRentalContext _db;
     private readonly CacheProvider _cache;
 
+    private readonly UserManager<User> _userManager;
+
     private const string FilterKey = "clientele";
 
-    public ClienteleController(VideoRentalContext context, CacheProvider cacheProvider)
+    public ClienteleController( UserManager<User> userManager, VideoRentalContext context, CacheProvider cacheProvider)
     {
         _db = context;
         _cache = cacheProvider;
+        //_roleManager = roleManager;
+        _userManager = userManager;
     }
 
     public IActionResult Index(SortState sortState = SortState.ClientNameAsc, int page = 1)
     {
-        ClienteleFilterViewModel filter = HttpContext.Session.Get<ClienteleFilterViewModel>(FilterKey);
-        if (filter == null)
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            filter = new ClienteleFilterViewModel() { Name = string.Empty };
-            HttpContext.Session.Set(FilterKey, filter);
+            ClienteleFilterViewModel filter = HttpContext.Session.Get<ClienteleFilterViewModel>(FilterKey);
+            if (filter == null)
+            {
+                filter = new ClienteleFilterViewModel() { Name = string.Empty };
+                HttpContext.Session.Set(FilterKey, filter);
+            }
+
+            string modelKey = $"{typeof(Clientele).Name}-{page}-{sortState}-{filter.Name}";
+            if (!_cache.TryGetValue(modelKey, out ClienteleViewModel model))
+            {
+                model = new ClienteleViewModel();
+
+                IQueryable<Clientele> clienteles = GetSortedEntities(sortState, filter.Name);
+
+                int count = clienteles.Count();
+                int pageSize = 10;
+                model.PageViewModel = new PageViewModel(page, count, pageSize);
+
+                model.Entities = count == 0 ? new List<Clientele>() : clienteles.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
+                model.SortViewModel = new SortViewModel(sortState);
+                model.ClienteleFilterViewModel = filter;
+
+                _cache.Set(modelKey, model);
+            }
+
+            return View(model);
         }
 
-        string modelKey = $"{typeof(Clientele).Name}-{page}-{sortState}-{filter.Name}";
-        if (!_cache.TryGetValue(modelKey, out ClienteleViewModel model))
+        else
         {
-            model = new ClienteleViewModel();
-
-            IQueryable<Clientele> clienteles = GetSortedEntities(sortState, filter.Name);
-
-            int count = clienteles.Count();
-            int pageSize = 10;
-            model.PageViewModel = new PageViewModel(page, count, pageSize);
-
-            model.Entities = count == 0 ? new List<Clientele>() : clienteles.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
-            model.SortViewModel = new SortViewModel(sortState);
-            model.ClienteleFilterViewModel = filter;
-
-            _cache.Set(modelKey, model);
+            return RedirectToAction("Index", "Home");
         }
-
-        return View(model);
     }
 
     [HttpPost]
     public IActionResult Index(ClienteleFilterViewModel filterModel, int page)
     {
-        ClienteleFilterViewModel filter = HttpContext.Session.Get<ClienteleFilterViewModel>(FilterKey);
-        if (filter != null)
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            filter.Name = filterModel.Name;
+            ClienteleFilterViewModel filter = HttpContext.Session.Get<ClienteleFilterViewModel>(FilterKey);
+            if (filter != null)
+            {
+                filter.Name = filterModel.Name;
 
-            HttpContext.Session.Remove(FilterKey);
-            HttpContext.Session.Set(FilterKey, filter);
+                HttpContext.Session.Remove(FilterKey);
+                HttpContext.Session.Set(FilterKey, filter);
+            }
+
+            return RedirectToAction("Index", new { page });
         }
-
-        return RedirectToAction("Index", new { page });
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public IActionResult Create(int page)
     {
-        ClienteleViewModel model = new ClienteleViewModel()
-        {
-            PageViewModel = new PageViewModel { CurrentPage = page }
-        };
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        return View(model);
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            ClienteleViewModel model = new ClienteleViewModel()
+            {
+                PageViewModel = new PageViewModel { CurrentPage = page }
+            };
+
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(ClienteleViewModel model)
     {
-        foreach (var entry in ModelState)
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            var key = entry.Key; // Название свойства
-            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+            foreach (var entry in ModelState)
+            {
+                var key = entry.Key; // Название свойства
+                var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
 
-            // Далее можно использовать key и errors в соответствии с вашими потребностями
-            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
-        }
+                // Далее можно использовать key и errors в соответствии с вашими потребностями
+                Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+            }
 
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
-            await _db.Clienteles.AddAsync(model.Entity);
-            await _db.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                await _db.Clienteles.AddAsync(model.Entity);
+                await _db.SaveChangesAsync();
 
-            _cache.Clean();
+                _cache.Clean();
 
-            return RedirectToAction("Index", "Clientele");
-        }
-
-        return View(model);
-    }
-
-    public async Task<IActionResult> Edit(int id, int page)
-    {
-        Clientele clientele = await _db.Clienteles.FindAsync(id);
-        if (clientele != null)
-        {
-            ClienteleViewModel model = new ClienteleViewModel();
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.Entity = clientele;
+                return RedirectToAction("Index", "Clientele");
+            }
 
             return View(model);
         }
 
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Edit(int id, int page)
+    {
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Clientele clientele = await _db.Clienteles.FindAsync(id);
+            if (clientele != null)
+            {
+                ClienteleViewModel model = new ClienteleViewModel();
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.Entity = clientele;
+
+                return View(model);
+            }
+            return NotFound();
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Edit(ClienteleViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            Clientele clientele = _db.Clienteles.Find(model.Entity.ClientId);
-            if (clientele != null)
+            if (ModelState.IsValid)
             {
-                clientele.Name = model.Entity.Name;
+                Clientele clientele = _db.Clienteles.Find(model.Entity.ClientId);
+                if (clientele != null)
+                {
+                    clientele.Name = model.Entity.Name;
+                    clientele.Surname = model.Entity.Surname;
+                    clientele.Middlename = model.Entity.Middlename;
+                    clientele.Phone = model.Entity.Phone;
+                    clientele.Passport = model.Entity.Passport;
+                    clientele.Addres = model.Entity.Addres;
 
-                _db.Clienteles.Update(clientele);
-                await _db.SaveChangesAsync();
+                    _db.Clienteles.Update(clientele);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Clientele", new { page = model.PageViewModel.CurrentPage });
+                    return RedirectToAction("Index", "Clientele", new { page = model.PageViewModel.CurrentPage });
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return View(model);
         }
-
-        return View(model);
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        Clientele clientele = await _db.Clienteles.FindAsync(id);
-        if (clientele == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        bool deleteFlag = false;
-        string message = "Do you want to delete this entity";
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Clientele clientele = await _db.Clienteles.FindAsync(id);
+            if (clientele == null)
+                return NotFound();
 
-        ClienteleViewModel model = new ClienteleViewModel();
-        model.Entity = clientele;
-        model.PageViewModel = new PageViewModel { CurrentPage = page };
-        model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+            bool deleteFlag = false;
+            string message = "Do you want to delete this entity";
 
-        return View(model);
+            ClienteleViewModel model = new ClienteleViewModel();
+            model.Entity = clientele;
+            model.PageViewModel = new PageViewModel { CurrentPage = page };
+            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(ClienteleViewModel model)
     {
-        Clientele clientele = await _db.Clienteles.FindAsync(model.Entity.ClientId);
-        if (clientele == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        _db.Clienteles.Remove(clientele);
-        await _db.SaveChangesAsync();
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Clientele clientele = await _db.Clienteles.FindAsync(model.Entity.ClientId);
+            if (clientele == null)
+                return NotFound();
 
-        _cache.Clean();
+            _db.Clienteles.Remove(clientele);
+            await _db.SaveChangesAsync();
 
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+            _cache.Clean();
 
-        return View(model);
+            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
-    private bool CheckUniqueValues(Clientele clientele)
+    public async Task<IActionResult> Details(int id)
     {
-        bool firstFlag = true;
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        Clientele tempgenre = _db.Clienteles.FirstOrDefault(g => g.ClientId == clientele.ClientId);
-        if (tempgenre != null)
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            if (clientele.ClientId != tempgenre.ClientId)
+            Clientele clientele = await _db.Clienteles.FindAsync(id);
+            if (clientele != null)
             {
-                ModelState.AddModelError(string.Empty, "Another entity have this name. Please replace this to another.");
-                firstFlag = false;
+                ClienteleViewModel model = new ClienteleViewModel()
+                {
+                    Entity = clientele,
+
+                    PageViewModel = new PageViewModel()
+                };
+
+                return View(model);
             }
+
+            return NotFound();
         }
 
-        if (firstFlag)
-            return true;
         else
-            return false;
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     private IQueryable<Clientele> GetSortedEntities(SortState sortState, string clientName)

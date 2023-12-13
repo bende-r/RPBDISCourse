@@ -16,19 +16,51 @@
         <fieldset class="p-2 float-right">
             <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
                 <label asp-for="TakingsFilterViewModel.DiskId"></label>
-                    <input name="DiskId" value="@Model.TakingsFilterViewModel.DiskId" />
+                <input name="DiskId" value="@Model.TakingsFilterViewModel.DiskId" />
 
                 <input type="submit" value="Filter" class="btn btn-primary"/>
             </form>
         </fieldset>
+        
+        <a asp-action="Overdue">Overdue</a>
     </div>
 
     <table class="table table-hover table-sm">
-        <thead class="thead-dark text-center text-white">
+        <thead class="thead-dark text-center ">
         <tr>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link text-white">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
                     @Html.DisplayNameFor(e => e.Entity.DiskId)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.Disk.Title)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.Client.Surname)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.Client.Name)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.PaymentMark)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.RefundMark)
+                </a>
+            </th>
+            <th class="w-25">
+                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
+                    @Html.DisplayNameFor(e => e.Entity.Staff.Surname)
                 </a>
             </th>
             <th class="w-25 align-middle">Modification</th>
@@ -39,8 +71,15 @@
         @foreach (var entity in Model.Entities)
         {
             <tr>
-                <td>@entity.TakeId</td>
+                <td>@entity.DiskId</td>
+                <td>@entity.Disk.Title</td>
+                <td>@entity.Client.Surname</td>
+                <td>@entity.Client.Name</td>
+                <td>@entity.PaymentMark</td>
+                <td>@entity.RefundMark</td>
+                <td>@entity.Staff.Surname</td>
                 <td class="text-center">
+                    <a asp-action="Details" asp-route-id="@entity.TakeId" class="btn btn-info">Details</a>
                     <a asp-action="Edit" asp-route-id="@entity.TakeId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@entity.TakeId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
                 </td>

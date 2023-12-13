@@ -1,0 +1,48 @@
+﻿@model VideoRentalWeb.Models.Entities.ClienteleViewModel
+@{
+    ViewData["Title"] = "Details"; Layout = "_Layout";
+}
+
+<div class="container w-50">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <table class="table table-sm">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th colspan="2">Detailed description of "@Model.Entity.Surname"</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><label asp-for="Entity.Surname"></label></td>
+                    <td>@Model.Entity.Surname</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Name"></label></td>
+                    <td>@Model.Entity.Name</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Middlename"></label></td>
+                    <td>@Model.Entity.Middlename</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Addres"></label></td>
+                    <td>@Model.Entity.Addres</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Phone"></label></td>
+                    <td>@Model.Entity.Phone</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Passport"></label></td>
+                    <td>@Model.Entity.Passport</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-100">Back</a></p>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a></p>
+    }
+</div>

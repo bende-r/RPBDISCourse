@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using VideoRentalWeb.DataModels;
@@ -21,9 +23,12 @@ public class TypesController : Controller
 
     private const string FilterKey = "types";
 
-    public TypesController(VideoRentalContext context, CacheProvider cacheProvider)
+    private readonly UserManager<User> _userManager;
+
+    public TypesController(UserManager<User> userManager, VideoRentalContext context, CacheProvider cacheProvider)
     {
         _db = context;
+        _userManager = userManager;
         _cache = cacheProvider;
     }
 
@@ -74,106 +79,191 @@ public class TypesController : Controller
 
     public IActionResult Create(int page)
     {
-        TypeViewModel model = new TypeViewModel()
-        {
-            PageViewModel = new PageViewModel { CurrentPage = page }
-        };
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        return View(model);
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            TypeViewModel model = new TypeViewModel()
+            {
+                PageViewModel = new PageViewModel { CurrentPage = page }
+            };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(TypeViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            await _db.Types.AddAsync(model.Entity);
-            await _db.SaveChangesAsync();
+            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+            {
+                await _db.Types.AddAsync(model.Entity);
+                await _db.SaveChangesAsync();
 
-            _cache.Clean();
+                _cache.Clean();
 
-            return RedirectToAction("Index", "Types");
-        }
-
-        return View(model);
-    }
-
-    public async Task<IActionResult> Edit(int id, int page)
-    {
-        Type type = await _db.Types.FindAsync(id);
-        if (type != null)
-        {
-            TypeViewModel model = new TypeViewModel();
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.Entity = type;
+                return RedirectToAction("Index", "Types");
+            }
 
             return View(model);
         }
 
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Edit(int id, int page)
+    {
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Type type = await _db.Types.FindAsync(id);
+            if (type != null)
+            {
+                TypeViewModel model = new TypeViewModel();
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.Entity = type;
+
+                return View(model);
+            }
+
+            return NotFound();
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Edit(TypeViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            Type type = _db.Types.Find(model.Entity.TypeId);
-            if (type != null)
+            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
             {
-                type.Title = model.Entity.Title;
+                Type type = _db.Types.Find(model.Entity.TypeId);
+                if (type != null)
+                {
+                    type.Title = model.Entity.Title;
+                    type.Description = model.Entity.Description;
 
-                _db.Types.Update(type);
-                await _db.SaveChangesAsync();
+                    _db.Types.Update(type);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Types", new { page = model.PageViewModel.CurrentPage });
+                    return RedirectToAction("Index", "Types", new { page = model.PageViewModel.CurrentPage });
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return View(model);
         }
 
-        return View(model);
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        Type type = await _db.Types.FindAsync(id);
-        if (type == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        bool deleteFlag = false;
-        string message = "Do you want to delete this entity";
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Type type = await _db.Types.FindAsync(id);
+            if (type == null)
+                return NotFound();
 
-        if (_db.Types.Any(s => s.TypeId == type.TypeId))
-            message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
+            bool deleteFlag = false;
+            string message = "Do you want to delete this entity";
 
-        TypeViewModel model = new TypeViewModel();
-        model.Entity = type;
-        model.PageViewModel = new PageViewModel { CurrentPage = page };
-        model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+            if (_db.Types.Any(s => s.TypeId == type.TypeId))
+                message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
 
-        return View(model);
+            TypeViewModel model = new TypeViewModel();
+            model.Entity = type;
+            model.PageViewModel = new PageViewModel { CurrentPage = page };
+            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(TypeViewModel model)
     {
-        Type type = await _db.Types.FindAsync(model.Entity.TypeId);
-        if (type == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        _db.Types.Remove(type);
-        await _db.SaveChangesAsync();
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Type type = await _db.Types.FindAsync(model.Entity.TypeId);
+            if (type == null)
+                return NotFound();
 
-        _cache.Clean();
+            _db.Types.Remove(type);
+            await _db.SaveChangesAsync();
 
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+            _cache.Clean();
 
-        return View(model);
+            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        Type type = await _db.Types.FindAsync(id);
+        if (type != null)
+        {
+            TypeViewModel model = new TypeViewModel()
+            {
+                Entity = type,
+
+                PageViewModel = new PageViewModel()
+            };
+
+            return View(model);
+        }
+
+        return NotFound();
     }
 
     private bool CheckUniqueValues(Type type)

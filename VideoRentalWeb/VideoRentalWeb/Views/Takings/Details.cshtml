@@ -1,0 +1,52 @@
+﻿@model VideoRentalWeb.Models.Entities.TakingViewModel
+@{
+    ViewData["Title"] = "Details"; Layout = "_Layout";
+}
+
+<div class="container w-50">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <table class="table table-sm">
+            <tbody>
+                <tr>
+                    <td><label asp-for="Entity.Disk.Title"></label></td>
+                    <td>@Model.Entity.DiskId</td>
+                    <td>@Model.Entity.Disk.Title</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Client"></label></td>
+                    <td>@Model.Entity.ClientId</td>
+                    <td>@Model.Entity.Client.Surname</td>
+                    <td>@Model.Entity.Client.Name</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.DateOfCapture"></label></td>
+                    <td>@Model.Entity.DateOfCapture</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.ReturnDate"></label></td>
+                    <td>@Model.Entity.ReturnDate</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.PaymentMark"></label></td>
+                    <td>@Model.Entity.PaymentMark</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.RefundMark"></label></td>
+                    <td>@Model.Entity.RefundMark</td>
+                </tr>
+                <tr>
+                    <td><label asp-for="Entity.Staff"></label></td>
+                    <td>@Model.Entity.StaffId</td>
+                    <td>@Model.Entity.Staff.Surname</td>
+                    <td>@Model.Entity.Staff.Name</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-100">Back</a></p>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a></p>
+    }
+</div>

@@ -8,7 +8,6 @@ using VideoRentalWeb.Models.Entities;
 
 namespace VideoRentalWeb.Controllers
 {
-  //  [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly UserManager<User> manager;
@@ -45,6 +44,15 @@ namespace VideoRentalWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(UsersViewModel model)
         {
+            foreach (var entry in ModelState)
+            {
+                var key = entry.Key; // Название свойства
+                var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+                // Далее можно использовать key и errors в соответствии с вашими потребностями
+                Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+            }
+
             if (ModelState.IsValid & CheckUniqueValues(model.Entity))
             {
                 model.Entity.UserName = model.Entity.Email;

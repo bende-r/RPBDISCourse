@@ -11,8 +11,10 @@
         </h2>
 
         <div class="container">
-            <a asp-action="Create" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary p-2">Add new entity</a>
-
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <a asp-action="Create" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-primary p-2">Add new entity</a>
+            }
             <fieldset class="p-2 float-right">
                 <form method="post" asp-route-page="@Model.PageViewModel.CurrentPage">
                     <label asp-for="PricelistFilterViewModel.Title"></label>
@@ -60,8 +62,11 @@
                         <td>@entity.Disk.CreationYear</td>
                         <td>@entity.Price</td>
                         <td class="text-center">
-                            <a asp-action="Edit" asp-route-id="@entity.PriceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@entity.PriceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
+                            <a asp-action="Details" asp-route-id="@entity.PriceId" class="btn btn-info">Details</a> @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@entity.PriceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@entity.PriceId" asp-route-sortState="@Model.SortViewModel.CurrentState" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger">Delete</a>
+                            }
                         </td>
                     </tr>
                 }
