@@ -53,6 +53,8 @@
         StaffNameDesc,
         StaffSurnameAsc,
         StaffSurnameDesc,
+        StaffPositionAsc,
+        StaffPositionDesc,
 
         //Pricelist
         PricelistDiscIdAsc,
@@ -97,7 +99,9 @@
         public SortState TypeTitleSort { get; set; }
 
         //Staff
+        public SortState StaffSurnameSort { get; set; }
         public SortState StaffNameSort { get; set; }
+        public SortState StaffPositionSort { get; set; }
 
         //Positions
         public SortState PositionNameSort { get; set; }
@@ -159,6 +163,12 @@
 
             //Staff
             StaffNameSort = state == SortState.StaffNameAsc ? SortState.StaffNameDesc : SortState.StaffNameAsc;
+            CurrentState = state;
+
+            StaffSurnameSort = state == SortState.StaffSurnameAsc ? SortState.StaffSurnameDesc : SortState.StaffSurnameAsc;
+            CurrentState = state;
+
+            StaffPositionSort = state == SortState.PositionTitleAsc ? SortState.PositionTitleDesc : SortState.PositionTitleAsc;
             CurrentState = state;
 
             //Positions

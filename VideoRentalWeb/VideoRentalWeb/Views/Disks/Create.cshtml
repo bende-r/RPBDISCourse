@@ -4,58 +4,59 @@
 }
 
 <div class="container text-center w-50">
-@if (User.Identity.IsAuthenticated)
-{
-    <form method="post">
-        <h2>Create a new entity</h2>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post">
+            <h2>Create a new entity</h2>
 
-        <div>
-            <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
-        </div>
+            <div>
+                <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage" />
+            </div>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
-        <p>
-        <label asp-for="Title"></label><br/>
+            <p>
+                <label asp-for="Title"></label><br />
                 <input asp-for="Title" required="" class="w-75" />
-        <p><span asp-validation-for="Title" class="text-danger"></span></p>
-        
-        <p>
-        <label asp-for="CreationYear"></label><br/>
-                <input asp-for="CreationYear" required="" class="w-75" />
-        <p><span asp-validation-for="CreationYear" class="text-danger"></span></p>
+            <p><span asp-validation-for="Title" class="text-danger"></span></p>
 
-        <p>
-        <label asp-for="ProducerId"></label><br />
-        <select asp-for="ProducerId" class="w-75" asp-items="Model.Producers" ></select>
-        <p><span asp-validation-for="ProducerId" class="text-danger"></span></p> 
-        
-        <p>
-        <label asp-for="MainActor"></label><br/>
+            <p>
+                <label asp-for="CreationYear"></label><br />
+                <input asp-for="CreationYear" required="" class="w-75" pattern="[1-9]\d{3}" maxlength="4" />
+            <p><span asp-validation-for="CreationYear" class="text-danger"></span></p>
+
+            <p>
+                <label asp-for="ProducerId"></label><br />
+                <select asp-for="ProducerId" class="w-75" asp-items="Model.Producers"></select>
+            <p><span asp-validation-for="ProducerId" class="text-danger"></span></p>
+
+            <p>
+                <label asp-for="MainActor"></label><br />
                 <input asp-for="MainActor" required="" class="w-75" />
-        <p><span asp-validation-for="MainActor" class="text-danger"></span></p>
-        
-        <p>
-        <label asp-for="Recording"></label><br/>
-                <input asp-for="Recording" required=""  class="w-75" />
-        <p><span asp-validation-for="Recording" class="text-danger"></span></p>
-        
+            <p><span asp-validation-for="MainActor" class="text-danger"></span></p>
+
+            <p>
+                <label asp-for="Recording"></label><br />
+                <input asp-for="Recording" required="" class="w-75" min="2020-01-01T00:00" />
+            <p><span asp-validation-for="Recording" class="text-danger"></span></p>
+
             <p>
                 <label asp-for="GenreId"></label><br />
                 <select asp-for="GenreId" class="w-75" asp-items="Model.Genres"></select>
             <p><span asp-validation-for="GenreId" class="text-danger"></span></p>
 
-        <p>
-        <label asp-for="TypeId"></label><br />
-        <select asp-for="TypeId" class="w-75" asp-items="Model.Types" ></select>
-        <p><span asp-validation-for="TypeId" class="text-danger"></span></p> 
+            <p>
+                <label asp-for="TypeId"></label><br />
+                <select asp-for="TypeId" class="w-75" asp-items="Model.Types"></select>
+            <p><span asp-validation-for="TypeId" class="text-danger"></span></p>
 
-        <p>
-        <input type="submit" value="Add" class="btn btn-success w-75"/>
-        <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a></p>
-    </form> }
-else
-{
-    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
-}
+            <p>
+                <input type="submit" value="Add" class="btn btn-success w-75" />
+            <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a></p>
+        </form>
+    }
+    else
+    {
+        <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+    }
 </div>

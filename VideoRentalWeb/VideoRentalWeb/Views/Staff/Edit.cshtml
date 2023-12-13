@@ -4,62 +4,64 @@
 }
 
 <div class="container text-center align-middle w-50">
-@if (User.Identity.IsAuthenticated)
-{
-    <form method="post">
-        <div>
-            <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
-            <input hidden asp-for="Entity.StaffId" value="@Model.Entity.StaffId"/>
-        </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post">
+            <div>
+                <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage" />
+                <input hidden asp-for="Entity.StaffId" value="@Model.Entity.StaffId" />
+            </div>
 
-        <h2>Edit entity</h2>
+            <h2>Edit entity</h2>
 
-        <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
-        <p>
-        <label asp-for="Entity.Surname"></label><br/>
+            <p>
+                <label asp-for="Entity.Surname"></label><br />
                 <input asp-for="Entity.Surname" class="w-75" />
-        <p>
+            <p>
                 <span asp-validation-for="Entity.Surname" class="text-danger"></span>
-        </p>
+            </p>
 
-        <p>
-        <label asp-for="Entity.Name"></label><br />
+            <p>
+                <label asp-for="Entity.Name"></label><br />
                 <input asp-for="Entity.Name" class="w-75" />
-        <p>
+            <p>
                 <span asp-validation-for="Entity.Name" class="text-danger"></span>
-        </p>
-        
+            </p>
+
+            <p>
+                <label asp-for="Middlename"></label><br />
+                <input asp-for="Middlename" class="w-75" />
+            <p>
+                <span asp-validation-for="Middlename" class="text-danger"></span>
+            </p>
+
+            <p>
+                <label asp-for="PositionId"></label><br />
+                <select asp-for="PositionId" class="w-75" asp-items="Model.Positions"></select>
+            <p><span asp-validation-for="PositionId" class="text-danger"></span></p>
+
+            <p>
+                <label asp-for="DateOfEmployment"></label><br />
+                <input asp-for="DateOfEmployment" class="w-75" min="2020-01-01T00:00" />
+            <p>
+                <span asp-validation-for="DateOfEmployment" class="text-danger"></span>
+            </p>
+
+            <p>
+                <input type="submit" value="Save" class="btn btn-success w-75" />
+            <p>
+                <a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a>
+            </p>
+        </form>
+    }
+    else
+    {
         <p>
-        <label asp-for="Middlename"></label><br />
-        <input asp-for="Middlename" class="w-75" />
-        <p>
-            <span asp-validation-for="Middlename" class="text-danger"></span>
-        </p>
-        
-        <p>
-        <label asp-for="PositionId"></label><br />
-        <select asp-for="PositionId" class="w-75" asp-items="Model.Positions" ></select>
-        <p><span asp-validation-for="PositionId" class="text-danger"></span></p> 
-        
-        <p>
-        <label asp-for="DateOfEmployment"></label><br />
-        <input asp-for="DateOfEmployment" class="w-75" />
-        <p>
-            <span asp-validation-for="DateOfEmployment" class="text-danger"></span>
+            You are not logged in. Please
+            <a href="/Account/Login">login</a>.
         </p>
 
-        <p>
-            <input type="submit" value="Save" class="btn btn-success w-75"/>
-        <p>
-            <a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a>
-        </p>
-    </form>
-}
-else
-{
-    <p>You are not logged in. Please 
-        <a href="/Account/Login">login</a>.
-    </p>
-
-}</div>
+    }
+</div>

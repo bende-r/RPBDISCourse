@@ -28,14 +28,14 @@
 
         <p>
         <label asp-for="DateOfCapture"></label><br/>
-        <input asp-for="DateOfCapture" class="w-75"/>
+                <input asp-for="DateOfCapture" class="w-75" min="2020-01-01T00:00" />
         <p>
             <span asp-validation-for="DateOfCapture" class="text-danger"></span>
         </p>
             
         <p>
         <label asp-for="ReturnDate"></label><br/>
-        <input asp-for="ReturnDate" class="w-75"/>
+                <input asp-for="ReturnDate" class="w-75" min="2020-01-01T00:00" />
         <p>
             <span asp-validation-for="ReturnDate" class="text-danger"></span>
         </p>

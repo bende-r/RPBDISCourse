@@ -18,6 +18,13 @@
     <p>
         <span asp-validation-for="Password"></span>
     </p>
+    
+    <p>
+    <label asp-for="NewPassword">Repeat</label><br />
+    <input asp-for="NewPassword" class="w-75" />
+    <p>
+        <span asp-validation-for="NewPassword"></span>
+    </p>
 
     <p>
         <input type="submit" value="Create" class="w-75 btn btn-success" />

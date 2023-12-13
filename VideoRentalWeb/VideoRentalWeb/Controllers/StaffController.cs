@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,213 +22,304 @@ public class StaffController : Controller
 
     private const string FilterKey = "staff";
 
-    public StaffController(VideoRentalContext context, CacheProvider cacheProvider)
+    private readonly UserManager<User> _userManager;
+
+    public StaffController(UserManager<User> userManager, VideoRentalContext context, CacheProvider cacheProvider)
     {
         _db = context;
+        _userManager = userManager;
         _cache = cacheProvider;
     }
 
     public IActionResult Index(SortState sortState = SortState.StaffNameAsc, int page = 1)
     {
-        StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
-        if (filter == null)
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            filter = new StaffFilterViewModel() { Surname = string.Empty };
-            HttpContext.Session.Set(FilterKey, filter);
+            StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
+            if (filter == null)
+            {
+                filter = new StaffFilterViewModel() { Surname = string.Empty };
+                HttpContext.Session.Set(FilterKey, filter);
+            }
+
+            string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Surname}";
+            if (!_cache.TryGetValue(modelKey, out StaffViewModel model))
+            {
+                model = new StaffViewModel();
+
+                IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Surname);
+
+                int count = carMarks.Count();
+                int pageSize = 10;
+                model.PageViewModel = new PageViewModel(page, count, pageSize);
+
+                model.Entities = count == 0 ? new List<Staff>() : carMarks.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
+                foreach (var VARIABLE in model.Entities)
+                {
+                    VARIABLE.Position = _db.Positions.Find(VARIABLE.PositionId);
+                }
+                model.SortViewModel = new SortViewModel(sortState);
+                model.StaffFilterViewModel = filter;
+
+                _cache.Set(modelKey, model);
+            }
+
+            return View(model);
         }
 
-        string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Surname}";
-        if (!_cache.TryGetValue(modelKey, out StaffViewModel model))
+        else
         {
-            model = new StaffViewModel();
-
-            IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Surname);
-
-            int count = carMarks.Count();
-            int pageSize = 10;
-            model.PageViewModel = new PageViewModel(page, count, pageSize);
-
-            model.Entities = count == 0 ? new List<Staff>() : carMarks.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
-            model.SortViewModel = new SortViewModel(sortState);
-            model.StaffFilterViewModel = filter;
-
-            _cache.Set(modelKey, model);
+            return RedirectToAction("Index", "Home");
         }
-
-        return View(model);
     }
 
     [HttpPost]
     public IActionResult Index(StaffFilterViewModel filterModel, int page)
     {
-        StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
-        if (filter != null)
-        {
-            filter.Surname = filterModel.Surname;
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-            HttpContext.Session.Remove(FilterKey);
-            HttpContext.Session.Set(FilterKey, filter);
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
+            if (filter != null)
+            {
+                filter.Surname = filterModel.Surname;
+
+                HttpContext.Session.Remove(FilterKey);
+                HttpContext.Session.Set(FilterKey, filter);
+            }
+
+            return RedirectToAction("Index", new { page });
         }
 
-        return RedirectToAction("Index", new { page });
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public IActionResult Create(int page)
     {
-        StaffViewModel model = new StaffViewModel(_db.Positions.ToList())
-        {
-            PageViewModel = new PageViewModel { CurrentPage = page }
-        };
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        return View(model);
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            StaffViewModel model = new StaffViewModel(_db.Positions.ToList())
+            {
+                PageViewModel = new PageViewModel { CurrentPage = page }
+            };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(StaffViewModel model)
     {
-        foreach (var entry in ModelState)
-        {
-            var key = entry.Key; // Название свойства
-            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-            // Далее можно использовать key и errors в соответствии с вашими потребностями
-            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
-        }
-
-        if (ModelState.IsValid)
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            Staff staff = new Staff()
+
+            if (ModelState.IsValid)
             {
-                Surname = model.Surname,
-                Name = model.Name,
-                Middlename = model.Middlename,
-                DateOfEmployment = model.DateOfEmployment,
-                PositionId = model.PositionId,
-            };
+                Staff staff = new Staff()
+                {
+                    Surname = model.Surname,
+                    Name = model.Name,
+                    Middlename = model.Middlename,
+                    DateOfEmployment = model.DateOfEmployment,
+                    PositionId = model.PositionId,
+                };
 
 
-            await _db.Staff.AddAsync(staff);
-            await _db.SaveChangesAsync();
+                await _db.Staff.AddAsync(staff);
+                await _db.SaveChangesAsync();
 
-            _cache.Clean();
+                _cache.Clean();
 
-            return RedirectToAction("Index", "Staff");
-        }
-
-        return View(model);
-    }
-
-    public async Task<IActionResult> Edit(int id, int page)
-    {
-        Staff staff = await _db.Staff.FindAsync(id);
-        if (staff != null)
-        {
-            StaffViewModel model = new StaffViewModel()
-            {
-                Positions = new SelectList(_db.Positions.ToList(), "PositionId", "Title", staff.Position.Title),
-            };
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.Entity = staff;
+                return RedirectToAction("Index", "Staff");
+            }
 
             return View(model);
         }
 
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Edit(int id, int page)
+    {
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Staff staff = await _db.Staff.FindAsync(id);
+            if (staff != null)
+            {
+                StaffViewModel model = new StaffViewModel()
+                {
+                    Positions = new SelectList(_db.Positions.ToList(), "PositionId", "Title", staff.Position.Title),
+                };
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.Entity = staff;
+
+                return View(model);
+            }
+
+            return NotFound();
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Edit(StaffViewModel model)
     {
-        foreach (var entry in ModelState)
-        {
-            var key = entry.Key; // Название свойства
-            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-            // Далее можно использовать key и errors в соответствии с вашими потребностями
-            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+
+            if (ModelState.IsValid)
+            {
+                Staff staff = _db.Staff.Find(model.Entity.StaffId);
+
+                if (staff != null)
+                {
+                    staff.Name = model.Entity.Name;
+                    staff.Surname = model.Entity.Surname;
+                    staff.Middlename = model.Middlename;
+                    staff.DateOfEmployment = model.DateOfEmployment;
+                    staff.PositionId = model.PositionId;
+
+                    _db.Staff.Update(staff);
+                    await _db.SaveChangesAsync();
+
+                    _cache.Clean();
+
+                    return RedirectToAction("Index", "Staff", new { page = model.PageViewModel.CurrentPage });
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+
+            return View(model);
         }
 
-        if (ModelState.IsValid)
+        else
         {
-            Staff staff = _db.Staff.Find(model.Entity.StaffId);
-            
-            if (staff != null)
-            {
-                staff.Name = model.Entity.Name;
-                staff.Surname = model.Entity.Surname;
-                staff.Middlename = model.Middlename;
-                staff.DateOfEmployment = model.DateOfEmployment;
-                staff.PositionId = model.PositionId;
-
-                _db.Staff.Update(staff);
-                await _db.SaveChangesAsync();
-
-                _cache.Clean();
-
-                return RedirectToAction("Index", "Staff", new { page = model.PageViewModel.CurrentPage });
-            }
-            else
-            {
-                return NotFound();
-            }
+            return RedirectToAction("Index", "Home");
         }
-
-        return View(model);
     }
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        Staff staff = await _db.Staff.FindAsync(id);
-        if (staff == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        bool deleteFlag = false;
-        string message = "Do you want to delete this entity";
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Staff staff = await _db.Staff.FindAsync(id);
+            if (staff == null)
+                return NotFound();
 
-      
-        StaffViewModel model = new StaffViewModel();
-        model.Entity = staff;
-        model.PageViewModel = new PageViewModel { CurrentPage = page };
-        model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+            bool deleteFlag = false;
+            string message = "Do you want to delete this entity";
 
-        return View(model);
+
+            StaffViewModel model = new StaffViewModel();
+            model.Entity = staff;
+            model.PageViewModel = new PageViewModel { CurrentPage = page };
+            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(StaffViewModel model)
     {
-        Staff staff = await _db.Staff.FindAsync(model.Entity.StaffId);
-        if (staff == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        _db.Staff.Remove(staff);
-        await _db.SaveChangesAsync();
-
-        _cache.Clean();
-
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
-
-        return View(model);
-    }
-
-    private bool CheckUniqueValues(Staff staff)
-    {
-        bool firstFlag = true;
-
-        Staff tempgenre = _db.Staff.FirstOrDefault(g => g.StaffId == staff.StaffId);
-        if (tempgenre != null)
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            if (staff.StaffId != tempgenre.StaffId)
-            {
-                ModelState.AddModelError(string.Empty, "Another entity have this name. Please replace this to another.");
-                firstFlag = false;
-            }
+            Staff staff = await _db.Staff.FindAsync(model.Entity.StaffId);
+            if (staff == null)
+                return NotFound();
+
+            _db.Staff.Remove(staff);
+            await _db.SaveChangesAsync();
+
+            _cache.Clean();
+
+            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+            return View(model);
         }
 
-        if (firstFlag)
-            return true;
         else
-            return false;
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Staff staff = await _db.Staff.FindAsync(id);
+            if (staff != null)
+            {
+                Staff staff1 = staff;
+                staff1.Position = _db.Positions.FirstOrDefault(position => position.PositionId == staff1.PositionId);
+
+                StaffViewModel model = new StaffViewModel()
+                {
+                    Entity = staff1,
+
+                    PageViewModel = new PageViewModel()
+                };
+
+                return View(model);
+            }
+
+            return NotFound();
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     private IQueryable<Staff> GetSortedEntities(SortState sortState, string name)
@@ -241,6 +334,20 @@ public class StaffController : Controller
 
             case SortState.StaffNameDesc:
                 staff = staff.OrderByDescending(g => g.Name);
+                break;
+            case SortState.StaffSurnameAsc:
+                staff = staff.OrderBy(g => g.Surname);
+                break;
+
+            case SortState.StaffSurnameDesc:
+                staff = staff.OrderByDescending(g => g.Surname);
+                break;
+            case SortState.StaffPositionAsc:
+                staff = staff.OrderBy(g => g.Position.Title);
+                break;
+
+            case SortState.StaffPositionDesc:
+                staff = staff.OrderByDescending(g => g.Position.Title);
                 break;
         }
 

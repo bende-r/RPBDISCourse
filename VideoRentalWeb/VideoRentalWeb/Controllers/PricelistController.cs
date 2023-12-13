@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,14 +22,18 @@ public class PricelistController : Controller
 
     private const string FilterKey = "pricelist";
 
-    public PricelistController(VideoRentalContext context, CacheProvider cacheProvider)
+    private readonly UserManager<User> _userManager;
+
+    public PricelistController(UserManager<User> userManager, VideoRentalContext context, CacheProvider cacheProvider)
     {
         _db = context;
         _cache = cacheProvider;
+        _userManager = userManager;
     }
 
     public IActionResult Index(SortState sortState = SortState.PricelistDiscIdAsc, int page = 1)
     {
+
         PricelistFilterViewModel filter = HttpContext.Session.Get<PricelistFilterViewModel>(FilterKey);
         if (filter == null)
         {
@@ -50,7 +56,7 @@ public class PricelistController : Controller
 
             foreach (var VARIABLE in model.Entities)
             {
-                VARIABLE.Disk =  _db.Disks.Find(VARIABLE.DiskId);
+                VARIABLE.Disk = _db.Disks.Find(VARIABLE.DiskId);
             }
 
             model.SortViewModel = new SortViewModel(sortState);
@@ -60,11 +66,13 @@ public class PricelistController : Controller
         }
 
         return View(model);
+
     }
 
     [HttpPost]
     public IActionResult Index(PricelistFilterViewModel filterModel, int page)
     {
+
         PricelistFilterViewModel filter = HttpContext.Session.Get<PricelistFilterViewModel>(FilterKey);
         if (filter != null)
         {
@@ -75,127 +83,206 @@ public class PricelistController : Controller
         }
 
         return RedirectToAction("Index", new { page });
+
     }
 
     public IActionResult Create(int page)
     {
-        PricelistViewModel model = new PricelistViewModel(_db.Disks.ToList())
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            PageViewModel = new PageViewModel { CurrentPage = page }
-        };
+            PricelistViewModel model = new PricelistViewModel(_db.Disks.ToList())
+            {
+                PageViewModel = new PageViewModel { CurrentPage = page }
+            };
 
-      //  ViewBag.Disks = new SelectList(_db.Disks, "DiskId", "Title"); ;
+            return View(model);
+        }
 
-        return View(model);
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(PricelistViewModel model)
     {
-        //   model.Entity.DiskId = model.DiskId;
-        foreach (var entry in ModelState)
-        {
-            var key = entry.Key; // Название свойства
-            var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-            // Далее можно использовать key и errors в соответствии с вашими потребностями
-            Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
-        }
-
-        if (ModelState.IsValid)
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-            Pricelist p = new Pricelist()
+
+            if (ModelState.IsValid)
             {
-                DiskId = model.
-                    DiskId,
-                Price = model.
-                    Price,
-            };
+                Pricelist p = new Pricelist()
+                {
+                    DiskId = model.
+                        DiskId,
+                    Price = model.
+                        Price,
+                };
 
 
-            await _db.Pricelists.AddAsync(p);
-            await _db.SaveChangesAsync();
+                await _db.Pricelists.AddAsync(p);
+                await _db.SaveChangesAsync();
 
-            _cache.Clean();
+                _cache.Clean();
 
-            return RedirectToAction("Index", "Pricelist");
-        }
-
-        return View(model);
-    }
-
-    public async Task<IActionResult> Edit(int id, int page)
-    {
-        Pricelist pricelist = await _db.Pricelists.FindAsync(id);
-        if (pricelist != null)
-        {
-            PricelistViewModel model = new PricelistViewModel();
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.Entity = pricelist;
+                return RedirectToAction("Index", "Pricelist");
+            }
 
             return View(model);
         }
 
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Edit(int id, int page)
+    {
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Pricelist pricelist = await _db.Pricelists.FindAsync(id);
+            if (pricelist != null)
+            {
+                PricelistViewModel model = new PricelistViewModel();
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.Entity = pricelist;
+
+                return View(model);
+            }
+
+            return NotFound();
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Edit(PricelistViewModel model)
     {
-        if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+        var currentUser = _userManager.GetUserAsync(User).Result;
+
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
         {
-          Pricelist pricelist = _db.Pricelists.Find(model.Entity.PriceId);
-          if (pricelist != null)
+            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
             {
-               pricelist.Price = model.Entity.Price;
+                Pricelist pricelist = _db.Pricelists.Find(model.Entity.PriceId);
+                if (pricelist != null)
+                {
+                    pricelist.Price = model.Entity.Price;
+                    pricelist.DiskId = model.Entity.DiskId;
 
-               _db.Pricelists.Update(pricelist);
-                await _db.SaveChangesAsync();
+                    _db.Pricelists.Update(pricelist);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Pricelist", new { page = model.PageViewModel.CurrentPage });
+                    return RedirectToAction("Index", "Pricelist", new { page = model.PageViewModel.CurrentPage });
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-           else
-            {return NotFound();
-           }
+
+            return View(model);
         }
 
-        return View(model);
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        Pricelist pricelist = await _db.Pricelists.FindAsync(id);
-        if (pricelist == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        bool deleteFlag = false;
-        string message = "Do you want to delete this entity";
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Pricelist pricelist = await _db.Pricelists.FindAsync(id);
+            if (pricelist == null)
+                return NotFound();
 
-        PricelistViewModel model = new PricelistViewModel();
-        model.Entity = pricelist;
-        model.PageViewModel = new PageViewModel { CurrentPage = page };
-        model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+            bool deleteFlag = false;
+            string message = "Do you want to delete this entity";
 
-        return View(model);
+            PricelistViewModel model = new PricelistViewModel();
+            model.Entity = pricelist;
+            model.PageViewModel = new PageViewModel { CurrentPage = page };
+            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(PricelistViewModel model)
     {
-       Pricelist pricelist = await _db.Pricelists.FindAsync(model.Entity.PriceId);
-        if (pricelist == null)
-            return NotFound();
+        var currentUser = _userManager.GetUserAsync(User).Result;
 
-        _db.Pricelists.Remove(pricelist);
-        await _db.SaveChangesAsync();
+        // Проверка наличия роли Admin у текущего пользователя
+        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        {
+            Pricelist pricelist = await _db.Pricelists.FindAsync(model.Entity.PriceId);
+            if (pricelist == null)
+                return NotFound();
 
-        _cache.Clean();
+            _db.Pricelists.Remove(pricelist);
+            await _db.SaveChangesAsync();
 
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+            _cache.Clean();
 
-        return View(model);
+            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+            return View(model);
+        }
+
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        Pricelist pricelist = await _db.Pricelists.FindAsync(id);
+        if (pricelist != null)
+        {
+            Pricelist pricelist1 = pricelist;
+            pricelist1.Disk = _db.Disks.FirstOrDefault(disk => disk.DiskId == pricelist1.DiskId);
+
+            PricelistViewModel model = new PricelistViewModel()
+            {
+                Entity = pricelist1,
+
+                PageViewModel = new PageViewModel()
+            };
+
+            return View(model);
+        }
+
+        return NotFound();
     }
 
     private bool CheckUniqueValues(Pricelist pricelist)

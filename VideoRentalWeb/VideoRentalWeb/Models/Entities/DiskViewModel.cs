@@ -25,6 +25,7 @@ namespace VideoRentalWeb.Models.Entities
         [Display(Name = "Disk")]
         public Disk? Entity { get; set; }
       
+        public int DiskId { get; set; }
         public string Title { get; set; } = null!;
         public string? CreationYear { get; set; }
         public string MainActor { get; set; } = null!;

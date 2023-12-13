@@ -7,7 +7,7 @@ namespace VideoRentalWeb.Models.Entities
     public class UsersViewModel : IEntitiesViewModel<User>
     {
         [Display(Name = "Users")]
-        public IEnumerable<User> Entities { get; set; }
+        public IEnumerable<User>? Entities { get; set; }
 
         [Display(Name = "User")]
         public User Entity { get; set; }
@@ -20,10 +20,10 @@ namespace VideoRentalWeb.Models.Entities
         [Required]
         [Display(Name = "New password")]
         [DataType(DataType.Password)]
-        public string NewPassword { get; set; }
+        public string? NewPassword { get; set; }
 
-        public PageViewModel PageViewModel { get; set; }
-        public DeleteViewModel DeleteViewModel { get; set; }
-        public SortViewModel SortViewModel { get; set; }
+        public PageViewModel? PageViewModel { get; set; }
+        public DeleteViewModel? DeleteViewModel { get; set; }
+        public SortViewModel? SortViewModel { get; set; }
     }
 }
