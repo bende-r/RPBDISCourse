@@ -33,43 +33,50 @@ public class StaffController : Controller
 
     public IActionResult Index(SortState sortState = SortState.StaffNameAsc, int page = 1)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
-            if (filter == null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                filter = new StaffFilterViewModel() { Surname = string.Empty };
-                HttpContext.Session.Set(FilterKey, filter);
-            }
-
-            string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Surname}";
-            if (!_cache.TryGetValue(modelKey, out StaffViewModel model))
-            {
-                model = new StaffViewModel();
-
-                IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Surname);
-
-                int count = carMarks.Count();
-                int pageSize = 10;
-                model.PageViewModel = new PageViewModel(page, count, pageSize);
-
-                model.Entities = count == 0 ? new List<Staff>() : carMarks.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
-                foreach (var VARIABLE in model.Entities)
+                StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
+                if (filter == null)
                 {
-                    VARIABLE.Position = _db.Positions.Find(VARIABLE.PositionId);
+                    filter = new StaffFilterViewModel() { Surname = string.Empty };
+                    HttpContext.Session.Set(FilterKey, filter);
                 }
-                model.SortViewModel = new SortViewModel(sortState);
-                model.StaffFilterViewModel = filter;
 
-                _cache.Set(modelKey, model);
+                string modelKey = $"{typeof(Staff).Name}-{page}-{sortState}-{filter.Surname}";
+                if (!_cache.TryGetValue(modelKey, out StaffViewModel model))
+                {
+                    model = new StaffViewModel();
+
+                    IQueryable<Staff> carMarks = GetSortedEntities(sortState, filter.Surname);
+
+                    int count = carMarks.Count();
+                    int pageSize = 10;
+                    model.PageViewModel = new PageViewModel(page, count, pageSize);
+
+                    model.Entities = count == 0 ? new List<Staff>() : carMarks.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
+                    foreach (var VARIABLE in model.Entities)
+                    {
+                        VARIABLE.Position = _db.Positions.Find(VARIABLE.PositionId);
+                    }
+                    model.SortViewModel = new SortViewModel(sortState);
+                    model.StaffFilterViewModel = filter;
+
+                    _cache.Set(modelKey, model);
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -79,23 +86,30 @@ public class StaffController : Controller
     [HttpPost]
     public IActionResult Index(StaffFilterViewModel filterModel, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
-            if (filter != null)
-            {
-                filter.Surname = filterModel.Surname;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                HttpContext.Session.Remove(FilterKey);
-                HttpContext.Session.Set(FilterKey, filter);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                StaffFilterViewModel filter = HttpContext.Session.Get<StaffFilterViewModel>(FilterKey);
+                if (filter != null)
+                {
+                    filter.Surname = filterModel.Surname;
+
+                    HttpContext.Session.Remove(FilterKey);
+                    HttpContext.Session.Set(FilterKey, filter);
+                }
+
+                return RedirectToAction("Index", new { page });
             }
 
-            return RedirectToAction("Index", new { page });
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -104,19 +118,26 @@ public class StaffController : Controller
 
     public IActionResult Create(int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            StaffViewModel model = new StaffViewModel(_db.Positions.ToList())
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                PageViewModel = new PageViewModel { CurrentPage = page }
-            };
+                StaffViewModel model = new StaffViewModel(_db.Positions.ToList())
+                {
+                    PageViewModel = new PageViewModel { CurrentPage = page }
+                };
 
-            return View(model);
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -126,35 +147,42 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(StaffViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            if (ModelState.IsValid)
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Staff staff = new Staff()
+
+                if (ModelState.IsValid)
                 {
-                    Surname = model.Surname,
-                    Name = model.Name,
-                    Middlename = model.Middlename,
-                    DateOfEmployment = model.DateOfEmployment,
-                    PositionId = model.PositionId,
-                };
+                    Staff staff = new Staff()
+                    {
+                        Surname = model.Surname,
+                        Name = model.Name,
+                        Middlename = model.Middlename,
+                        DateOfEmployment = model.DateOfEmployment,
+                        PositionId = model.PositionId,
+                    };
 
 
-                await _db.Staff.AddAsync(staff);
-                await _db.SaveChangesAsync();
+                    await _db.Staff.AddAsync(staff);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Staff");
+                    return RedirectToAction("Index", "Staff");
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -163,27 +191,34 @@ public class StaffController : Controller
 
     public async Task<IActionResult> Edit(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Staff staff = await _db.Staff.FindAsync(id);
-            if (staff != null)
-            {
-                StaffViewModel model = new StaffViewModel()
-                {
-                    Positions = new SelectList(_db.Positions.ToList(), "PositionId", "Title", staff.Position.Title),
-                };
-                model.PageViewModel = new PageViewModel { CurrentPage = page };
-                model.Entity = staff;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Staff staff = await _db.Staff.FindAsync(id);
+                if (staff != null)
+                {
+                    StaffViewModel model = new StaffViewModel()
+                    {
+                        Positions = new SelectList(_db.Positions.ToList(), "PositionId", "Title", staff.Position.Title),
+                    };
+                    model.PageViewModel = new PageViewModel { CurrentPage = page };
+                    model.Entity = staff;
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -193,40 +228,47 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(StaffViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            if (ModelState.IsValid)
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Staff staff = _db.Staff.Find(model.Entity.StaffId);
 
-                if (staff != null)
+                if (ModelState.IsValid)
                 {
-                    staff.Name = model.Entity.Name;
-                    staff.Surname = model.Entity.Surname;
-                    staff.Middlename = model.Middlename;
-                    staff.DateOfEmployment = model.DateOfEmployment;
-                    staff.PositionId = model.PositionId;
+                    Staff staff = _db.Staff.Find(model.Entity.StaffId);
 
-                    _db.Staff.Update(staff);
-                    await _db.SaveChangesAsync();
+                    if (staff != null)
+                    {
+                        staff.Name = model.Entity.Name;
+                        staff.Surname = model.Entity.Surname;
+                        staff.Middlename = model.Middlename;
+                        staff.DateOfEmployment = model.DateOfEmployment;
+                        staff.PositionId = model.PositionId;
 
-                    _cache.Clean();
+                        _db.Staff.Update(staff);
+                        await _db.SaveChangesAsync();
 
-                    return RedirectToAction("Index", "Staff", new { page = model.PageViewModel.CurrentPage });
+                        _cache.Clean();
+
+                        return RedirectToAction("Index", "Staff", new { page = model.PageViewModel.CurrentPage });
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
-                else
-                {
-                    return NotFound();
-                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -235,27 +277,34 @@ public class StaffController : Controller
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Staff staff = await _db.Staff.FindAsync(id);
-            if (staff == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            bool deleteFlag = false;
-            string message = "Do you want to delete this entity";
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Staff staff = await _db.Staff.FindAsync(id);
+                if (staff == null)
+                    return NotFound();
+
+                bool deleteFlag = false;
+                string message = "Do you want to delete this entity";
 
 
-            StaffViewModel model = new StaffViewModel();
-            model.Entity = staff;
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+                StaffViewModel model = new StaffViewModel();
+                model.Entity = staff;
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
 
-            return View(model);
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -265,25 +314,32 @@ public class StaffController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(StaffViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Staff staff = await _db.Staff.FindAsync(model.Entity.StaffId);
-            if (staff == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            _db.Staff.Remove(staff);
-            await _db.SaveChangesAsync();
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Staff staff = await _db.Staff.FindAsync(model.Entity.StaffId);
+                if (staff == null)
+                    return NotFound();
 
-            _cache.Clean();
+                _db.Staff.Remove(staff);
+                await _db.SaveChangesAsync();
 
-            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+                _cache.Clean();
 
-            return View(model);
+                model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -292,30 +348,37 @@ public class StaffController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Staff staff = await _db.Staff.FindAsync(id);
-            if (staff != null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Staff staff1 = staff;
-                staff1.Position = _db.Positions.FirstOrDefault(position => position.PositionId == staff1.PositionId);
-
-                StaffViewModel model = new StaffViewModel()
+                Staff staff = await _db.Staff.FindAsync(id);
+                if (staff != null)
                 {
-                    Entity = staff1,
+                    Staff staff1 = staff;
+                    staff1.Position = _db.Positions.FirstOrDefault(position => position.PositionId == staff1.PositionId);
 
-                    PageViewModel = new PageViewModel()
-                };
+                    StaffViewModel model = new StaffViewModel()
+                    {
+                        Entity = staff1,
 
-                return View(model);
+                        PageViewModel = new PageViewModel()
+                    };
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Staff");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");

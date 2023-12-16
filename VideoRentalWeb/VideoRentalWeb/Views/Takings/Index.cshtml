@@ -22,7 +22,7 @@
             </form>
         </fieldset>
         
-        <a asp-action="Overdue">Overdue</a>
+            <a asp-action="Overdue" class="btn btn-primary">Overdue</a>
     </div>
 
     <table class="table table-hover table-sm">
@@ -34,34 +34,22 @@
                 </a>
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.Disk.Title)
-                </a>
+             
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.Client.Surname)
-                </a>
+              
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.Client.Name)
-                </a>
+              
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.PaymentMark)
-                </a>
+               
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.RefundMark)
-                </a>
+               
             </th>
             <th class="w-25">
-                <a asp-action="Index" asp-route-sortState="@Model.SortViewModel.TakingsSort" asp-route-page="@Model.PageViewModel.CurrentPage" class="nav-link ">
-                    @Html.DisplayNameFor(e => e.Entity.Staff.Surname)
-                </a>
+               
             </th>
             <th class="w-25 align-middle">Modification</th>
         </tr>

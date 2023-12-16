@@ -1,14 +1,33 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model RoleViewModel
-
+@if (User.Identity.IsAuthenticated)
+{
 <form asp-action="Edit" method="post" class="container text-center w-25">
     <input type="hidden" name="userId" value="@Model.User.Id" />
     <div class="form-group">
         @foreach (IdentityRole role in Model.Roles)
         {
-            <input type="checkbox" name="roles" value="@role.Name" class="float-left"
-                   @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
+            @if (User.IsInRole("Admin") & !role.Name.Equals("Admin"))
+            {
+                <input type="checkbox" name="roles" value="@role.Name" class="float-left"
+                @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
             }
+            else
+            {
+                @if (!User.Identity.Name.Equals(Model.User.Email))
+                {
+                    <input type="checkbox" name="roles" value="@role.Name" class="float-left"
+                    @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
+                }
+            }
+
+            @role.Name <br />
+        }
     </div>
     <button type="submit" class="btn btn-primary w-100">Сохранить</button>
 </form>
+}
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}

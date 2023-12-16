@@ -32,46 +32,53 @@ public class TakingsController : Controller
 
     public IActionResult Index(SortState sortState = SortState.DiskTitleAsc, int page = 1)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            TakingsFilterViewModel filter = HttpContext.Session.Get<TakingsFilterViewModel>(FilterKey);
-            if (filter == null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                filter = new TakingsFilterViewModel() { DiskId = 0 };
-                HttpContext.Session.Set(FilterKey, filter);
-            }
-
-            string modelKey = $"{typeof(Taking).Name}-{page}-{sortState}-{filter.DiskId}";
-            if (!_cache.TryGetValue(modelKey, out TakingViewModel model))
-            {
-                model = new TakingViewModel();
-
-                IQueryable<Taking> takings = GetSortedEntities(sortState, filter.DiskId.ToString());
-
-                int count = takings.Count();
-                int pageSize = 10;
-                model.PageViewModel = new PageViewModel(page, count, pageSize);
-
-                model.Entities = count == 0 ? new List<Taking>() : takings.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
-
-                foreach (var VARIABLE in model.Entities)
+                TakingsFilterViewModel filter = HttpContext.Session.Get<TakingsFilterViewModel>(FilterKey);
+                if (filter == null)
                 {
-                    VARIABLE.Disk = _db.Disks.Find(VARIABLE.DiskId);
-                    VARIABLE.Client = _db.Clienteles.Find(VARIABLE.ClientId);
-                    VARIABLE.Staff = _db.Staff.Find(VARIABLE.StaffId);
+                    filter = new TakingsFilterViewModel() { DiskId = 0 };
+                    HttpContext.Session.Set(FilterKey, filter);
                 }
-                model.SortViewModel = new SortViewModel(sortState);
-                model.TakingsFilterViewModel = filter;
 
-                _cache.Set(modelKey, model);
+                string modelKey = $"{typeof(Taking).Name}-{page}-{sortState}-{filter.DiskId}";
+                if (!_cache.TryGetValue(modelKey, out TakingViewModel model))
+                {
+                    model = new TakingViewModel();
+
+                    IQueryable<Taking> takings = GetSortedEntities(sortState, filter.DiskId.ToString());
+
+                    int count = takings.Count();
+                    int pageSize = 10;
+                    model.PageViewModel = new PageViewModel(page, count, pageSize);
+
+                    model.Entities = count == 0 ? new List<Taking>() : takings.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
+
+                    foreach (var VARIABLE in model.Entities)
+                    {
+                        VARIABLE.Disk = _db.Disks.Find(VARIABLE.DiskId);
+                        VARIABLE.Client = _db.Clienteles.Find(VARIABLE.ClientId);
+                        VARIABLE.Staff = _db.Staff.Find(VARIABLE.StaffId);
+                    }
+                    model.SortViewModel = new SortViewModel(sortState);
+                    model.TakingsFilterViewModel = filter;
+
+                    _cache.Set(modelKey, model);
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -81,23 +88,30 @@ public class TakingsController : Controller
     [HttpPost]
     public IActionResult Index(TakingsFilterViewModel filterModel, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            TakingsFilterViewModel filter = HttpContext.Session.Get<TakingsFilterViewModel>(FilterKey);
-            if (filter != null)
-            {
-                filter.DiskId = filterModel.DiskId;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                HttpContext.Session.Remove(FilterKey);
-                HttpContext.Session.Set(FilterKey, filter);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                TakingsFilterViewModel filter = HttpContext.Session.Get<TakingsFilterViewModel>(FilterKey);
+                if (filter != null)
+                {
+                    filter.DiskId = filterModel.DiskId;
+
+                    HttpContext.Session.Remove(FilterKey);
+                    HttpContext.Session.Set(FilterKey, filter);
+                }
+
+                return RedirectToAction("Index", new { page });
             }
 
-            return RedirectToAction("Index", new { page });
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -106,19 +120,26 @@ public class TakingsController : Controller
 
     public IActionResult Create(int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            TakingViewModel model = new TakingViewModel(_db.Clienteles.ToList(), _db.Disks.ToList(), _db.Staff.ToList())
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                PageViewModel = new PageViewModel { CurrentPage = page }
-            };
+                TakingViewModel model = new TakingViewModel(_db.Clienteles.ToList(), _db.Disks.ToList(), _db.Staff.ToList())
+                {
+                    PageViewModel = new PageViewModel { CurrentPage = page }
+                };
 
-            return View(model);
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -128,35 +149,42 @@ public class TakingsController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(TakingViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            if (ModelState.IsValid)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Taking taking = new Taking()
+                if (ModelState.IsValid)
                 {
-                    ClientId = model.ClientId,
-                    DiskId = model.DiskId,
-                    DateOfCapture = model.DateOfCapture,
-                    ReturnDate = model.ReturnDate,
-                    PaymentMark = model.PaymentMark,
-                    RefundMark = model.RefundMark,
-                    StaffId = model.StaffId,
-                };
+                    Taking taking = new Taking()
+                    {
+                        ClientId = model.ClientId,
+                        DiskId = model.DiskId,
+                        DateOfCapture = model.DateOfCapture,
+                        ReturnDate = model.ReturnDate,
+                        PaymentMark = model.PaymentMark,
+                        RefundMark = model.RefundMark,
+                        StaffId = model.StaffId,
+                    };
 
-                await _db.Takings.AddAsync(taking);
-                await _db.SaveChangesAsync();
+                    await _db.Takings.AddAsync(taking);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Takings");
+                    return RedirectToAction("Index", "Takings");
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -165,29 +193,36 @@ public class TakingsController : Controller
 
     public async Task<IActionResult> Edit(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Taking taking = await _db.Takings.FindAsync(id);
-            if (taking != null)
-            {
-                TakingViewModel model = new TakingViewModel()
-                {
-                    Clientele = new SelectList(_db.Clienteles.ToList(), "ClientId", "Surname", taking.Client.Surname),
-                    Staff = new SelectList(_db.Staff.ToList(), "StaffId", "Surname", taking.Staff.Surname),
-                    Disks = new SelectList(_db.Disks.ToList(), "DiskId", "Title", taking.Disk.Title),
-                };
-                model.PageViewModel = new PageViewModel { CurrentPage = page };
-                model.Entity = taking;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Taking taking = await _db.Takings.FindAsync(id);
+                if (taking != null)
+                {
+                    TakingViewModel model = new TakingViewModel()
+                    {
+                        Clientele = new SelectList(_db.Clienteles.ToList(), "ClientId", "Surname", taking.Client.Surname),
+                        Staff = new SelectList(_db.Staff.ToList(), "StaffId", "Surname", taking.Staff.Surname),
+                        Disks = new SelectList(_db.Disks.ToList(), "DiskId", "Title", taking.Disk.Title),
+                    };
+                    model.PageViewModel = new PageViewModel { CurrentPage = page };
+                    model.Entity = taking;
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -197,33 +232,40 @@ public class TakingsController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(TakingViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Taking taking = _db.Takings.Find(model.Entity.TakeId);
-            if (taking != null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                taking.ClientId = model.ClientId;
-                taking.DiskId = model.DiskId;
-                taking.DateOfCapture = model.DateOfCapture;
-                taking.ReturnDate = model.ReturnDate;
-                taking.PaymentMark = model.PaymentMark;
-                taking.RefundMark = model.RefundMark;
-                taking.StaffId = model.StaffId;
+                Taking taking = _db.Takings.Find(model.Entity.TakeId);
+                if (taking != null)
+                {
+                    taking.ClientId = model.ClientId;
+                    taking.DiskId = model.DiskId;
+                    taking.DateOfCapture = model.DateOfCapture;
+                    taking.ReturnDate = model.ReturnDate;
+                    taking.PaymentMark = model.PaymentMark;
+                    taking.RefundMark = model.RefundMark;
+                    taking.StaffId = model.StaffId;
 
-                _db.Takings.Update(taking);
-                await _db.SaveChangesAsync();
+                    _db.Takings.Update(taking);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Takings", new { page = model.PageViewModel.CurrentPage });
+                    return RedirectToAction("Index", "Takings", new { page = model.PageViewModel.CurrentPage });
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -232,27 +274,34 @@ public class TakingsController : Controller
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Taking taking = await _db.Takings.FindAsync(id);
-            if (taking == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            bool deleteFlag = false;
-            string message = "Do you want to delete this entity";
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Taking taking = await _db.Takings.FindAsync(id);
+                if (taking == null)
+                    return NotFound();
+
+                bool deleteFlag = false;
+                string message = "Do you want to delete this entity";
 
 
-            TakingViewModel model = new TakingViewModel();
-            model.Entity = taking;
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+                TakingViewModel model = new TakingViewModel();
+                model.Entity = taking;
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
 
-            return View(model);
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -262,25 +311,32 @@ public class TakingsController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(TakingViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Taking taking = await _db.Takings.FindAsync(model.Entity.TakeId);
-            if (taking == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            _db.Takings.Remove(taking);
-            await _db.SaveChangesAsync();
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Taking taking = await _db.Takings.FindAsync(model.Entity.TakeId);
+                if (taking == null)
+                    return NotFound();
 
-            _cache.Clean();
+                _db.Takings.Remove(taking);
+                await _db.SaveChangesAsync();
 
-            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+                _cache.Clean();
 
-            return View(model);
+                model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -289,32 +345,39 @@ public class TakingsController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Taking taking = await _db.Takings.FindAsync(id);
-            if (taking != null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Taking taking1 = taking;
-                taking1.Client = _db.Clienteles.FirstOrDefault(clientele => clientele.ClientId == taking1.ClientId);
-                taking1.Staff = _db.Staff.FirstOrDefault(staff => staff.StaffId == taking1.StaffId);
-                taking1.Disk = _db.Disks.FirstOrDefault(disk => disk.DiskId == taking1.DiskId);
-
-                TakingViewModel model = new TakingViewModel()
+                Taking taking = await _db.Takings.FindAsync(id);
+                if (taking != null)
                 {
-                    Entity = taking1,
+                    Taking taking1 = taking;
+                    taking1.Client = _db.Clienteles.FirstOrDefault(clientele => clientele.ClientId == taking1.ClientId);
+                    taking1.Staff = _db.Staff.FirstOrDefault(staff => staff.StaffId == taking1.StaffId);
+                    taking1.Disk = _db.Disks.FirstOrDefault(disk => disk.DiskId == taking1.DiskId);
 
-                    PageViewModel = new PageViewModel()
-                };
+                    TakingViewModel model = new TakingViewModel()
+                    {
+                        Entity = taking1,
 
-                return View(model);
+                        PageViewModel = new PageViewModel()
+                    };
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -324,37 +387,44 @@ public class TakingsController : Controller
 
     public async Task<IActionResult> Overdue()
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            DateTime currentDate = DateTime.Now;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            var overdueTakes = _db.Takings
-                .Where(t => t.ReturnDate < currentDate)
-                .ToList();
-
-            foreach (var VARIABLE in overdueTakes)
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                VARIABLE.Disk = _db.Disks.Find(VARIABLE.DiskId);
-                VARIABLE.Client = _db.Clienteles.Find(VARIABLE.ClientId);
-                VARIABLE.Staff = _db.Staff.Find(VARIABLE.StaffId);
+                DateTime currentDate = DateTime.Now;
+
+                var overdueTakes = _db.Takings
+                    .Where(t => t.ReturnDate < currentDate)
+                    .ToList();
+
+                foreach (var VARIABLE in overdueTakes)
+                {
+                    VARIABLE.Disk = _db.Disks.Find(VARIABLE.DiskId);
+                    VARIABLE.Client = _db.Clienteles.Find(VARIABLE.ClientId);
+                    VARIABLE.Staff = _db.Staff.Find(VARIABLE.StaffId);
+                }
+
+                TakingViewModel model = new TakingViewModel()
+                {
+                    Entities = overdueTakes,
+
+                    PageViewModel = new PageViewModel()
+                };
+
+                return View(model);
+
+
+                return NotFound();
             }
 
-            TakingViewModel model = new TakingViewModel()
+            else
             {
-                Entities = overdueTakes,
-
-                PageViewModel = new PageViewModel()
-            };
-
-            return View(model);
-
-
-            return NotFound();
+                return RedirectToAction("Index", "Takings");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");

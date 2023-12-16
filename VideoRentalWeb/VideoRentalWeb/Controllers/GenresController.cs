@@ -77,19 +77,26 @@ public class GenresController : Controller
 
     public IActionResult Create(int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            GenreViewModel model = new GenreViewModel()
-        {
-            PageViewModel = new PageViewModel { CurrentPage = page }
-        };
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-        return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                GenreViewModel model = new GenreViewModel()
+                {
+                    PageViewModel = new PageViewModel { CurrentPage = page }
+                };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Genres");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -99,24 +106,31 @@ public class GenresController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(GenreViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
-            await _db.Genres.AddAsync(model.Entity);
-            await _db.SaveChangesAsync();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            _cache.Clean();
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+                {
+                    await _db.Genres.AddAsync(model.Entity);
+                    await _db.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Genres");
+                    _cache.Clean();
+
+                    return RedirectToAction("Index", "Genres");
+                }
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Genres");
+            }
         }
-
-        return View(model);
-        }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -125,24 +139,31 @@ public class GenresController : Controller
 
     public async Task<IActionResult> Edit(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Genre genre = await _db.Genres.FindAsync(id);
-        if (genre != null)
-        {
-            GenreViewModel model = new GenreViewModel();
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.Entity = genre;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Genre genre = await _db.Genres.FindAsync(id);
+                if (genre != null)
+                {
+                    GenreViewModel model = new GenreViewModel();
+                    model.PageViewModel = new PageViewModel { CurrentPage = page };
+                    model.Entity = genre;
+
+                    return View(model);
+                }
+
+                return NotFound();
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Genres");
+            }
         }
-
-        return NotFound();
-        }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -152,35 +173,42 @@ public class GenresController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(GenreViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
+        if (User.Identity.IsAuthenticated)
+        {
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
-        {
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-        {
-            Genre genre = _db.Genres.Find(model.Entity.GenreId);
-            if (genre != null)
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                genre.Title = model.Entity.Title;
-                genre.Description = model.Entity.Description;
+                if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+                {
+                    Genre genre = _db.Genres.Find(model.Entity.GenreId);
+                    if (genre != null)
+                    {
+                        genre.Title = model.Entity.Title;
+                        genre.Description = model.Entity.Description;
 
-                _db.Genres.Update(genre);
-                await _db.SaveChangesAsync();
+                        _db.Genres.Update(genre);
+                        await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                        _cache.Clean();
 
-                return RedirectToAction("Index", "Genres", new { page = model.PageViewModel.CurrentPage });
+                        return RedirectToAction("Index", "Genres", new { page = model.PageViewModel.CurrentPage });
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+
+                return View(model);
             }
+
             else
             {
-                return NotFound();
+                return RedirectToAction("Index", "Genres");
             }
         }
-
-        return View(model);
-        }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -189,29 +217,36 @@ public class GenresController : Controller
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Genre genre = await _db.Genres.FindAsync(id);
-        if (genre == null)
-            return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-        bool deleteFlag = false;
-        string message = "Do you want to delete this entity";
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Genre genre = await _db.Genres.FindAsync(id);
+                if (genre == null)
+                    return NotFound();
 
-        if (_db.Disks.Any(s => s.DiskId == genre.GenreId))
-            message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
+                bool deleteFlag = false;
+                string message = "Do you want to delete this entity";
 
-        GenreViewModel model = new GenreViewModel();
-        model.Entity = genre;
-        model.PageViewModel = new PageViewModel { CurrentPage = page };
-        model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+                if (_db.Disks.Any(s => s.DiskId == genre.GenreId))
+                    message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
 
-        return View(model);
+                GenreViewModel model = new GenreViewModel();
+                model.Entity = genre;
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Genres");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -221,25 +256,32 @@ public class GenresController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(GenreViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Genre genre = await _db.Genres.FindAsync(model.Entity.GenreId);
-        if (genre == null)
-            return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-        _db.Genres.Remove(genre);
-        await _db.SaveChangesAsync();
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Genre genre = await _db.Genres.FindAsync(model.Entity.GenreId);
+                if (genre == null)
+                    return NotFound();
 
-        _cache.Clean();
+                _db.Genres.Remove(genre);
+                await _db.SaveChangesAsync();
 
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+                _cache.Clean();
 
-        return View(model);
+                model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Genres");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -248,20 +290,27 @@ public class GenresController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        Genre genre = await _db.Genres.FindAsync(id);
-        if (genre != null)
+        if (User.Identity.IsAuthenticated)
         {
-            GenreViewModel model = new GenreViewModel()
+            Genre genre = await _db.Genres.FindAsync(id);
+            if (genre != null)
             {
-                Entity = genre,
+                GenreViewModel model = new GenreViewModel()
+                {
+                    Entity = genre,
 
-                PageViewModel = new PageViewModel()
-            };
+                    PageViewModel = new PageViewModel()
+                };
 
-            return View(model);
+                return View(model);
+            }
+
+            return NotFound();
         }
-
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Genres");
+        }
     }
 
     private bool CheckUniqueValues(Genre genre)
