@@ -21,201 +21,363 @@ namespace VideoRentalWeb.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<User> users = manager.Users.ToList();
-
-            UsersViewModel model = new UsersViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                Entities = users
-            };
+                var currentUser = manager.GetUserAsync(User).Result;
 
-            return View(model);
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
+                {
+                    IEnumerable<User> users = manager.Users.ToList();
+
+                    UsersViewModel model = new UsersViewModel
+                    {
+                        Entities = users
+                    };
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Create()
         {
-            UsersViewModel model = new UsersViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                Entity = new User()
-            };
+                var currentUser = manager.GetUserAsync(User).Result;
 
-            return View(model);
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
+                {
+                    UsersViewModel model = new UsersViewModel
+                    {
+                        Entity = new User()
+                    };
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(UsersViewModel model)
         {
-            foreach (var entry in ModelState)
+            if (User.Identity.IsAuthenticated)
             {
-                var key = entry.Key; // Название свойства
-                var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+                var currentUser = manager.GetUserAsync(User).Result;
 
-                // Далее можно использовать key и errors в соответствии с вашими потребностями
-                Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
-            }
-
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
-            {
-                model.Entity.UserName = model.Entity.Email;
-
-                var result = await manager.CreateAsync(model.Entity, model.Password);
-                if (result.Succeeded)
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
                 {
-                    User user = await manager.FindByNameAsync(model.Entity.Email);
-
-                    if (user != null)
+                    foreach (var entry in ModelState)
                     {
-                        await manager.AddToRoleAsync(user, "user");
+                        var key = entry.Key; // Название свойства
+                        var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+                        // Далее можно использовать key и errors в соответствии с вашими потребностями
+                        Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
                     }
 
-                    return RedirectToAction("Index");
+                    if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+                    {
+                        model.Entity.UserName = model.Entity.Email;
+
+                        var result = await manager.CreateAsync(model.Entity, model.Password);
+                        if (result.Succeeded)
+                        {
+                            User user = await manager.FindByNameAsync(model.Entity.Email);
+
+                            if (user != null)
+                            {
+                                await manager.AddToRoleAsync(user, "user");
+                            }
+
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            foreach (var error in result.Errors)
+                                ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+
+                    return View(model);
                 }
+
                 else
                 {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError(string.Empty, error.Description);
+                    return RedirectToAction("Index", "Home");
                 }
             }
-
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public async Task<IActionResult> Edit(string id)
         {
-            User user = await manager.FindByIdAsync(id);
-
-            if (user == null)
-                return NotFound();
-
-            UsersViewModel model = new UsersViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                Entity = user
-            };
+                var currentUser = manager.GetUserAsync(User).Result;
 
-            return View(model);
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
+                {
+                    User user = await manager.FindByIdAsync(id);
+
+                    if (user == null)
+                        return NotFound();
+
+                    UsersViewModel model = new UsersViewModel
+                    {
+                        Entity = user
+                    };
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(UsersViewModel model)
         {
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+            if (User.Identity.IsAuthenticated)
             {
-                User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
+                var currentUser = manager.GetUserAsync(User).Result;
 
-                if (user != null)
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
                 {
-                    user.Email = model.Entity.Email;
-                    user.UserName = model.Entity.Email;
-
-                    var result = await manager.UpdateAsync(user);
-
-                    if (result.Succeeded)
+                    if (ModelState.IsValid & CheckUniqueValues(model.Entity))
                     {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        foreach (var error in result.Errors)
+                        User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
+
+                        if (user != null)
                         {
-                            ModelState.AddModelError(string.Empty, error.Description);
+                            user.Email = model.Entity.Email;
+                            user.UserName = model.Entity.Email;
+
+                            var result = await manager.UpdateAsync(user);
+
+                            if (result.Succeeded)
+                            {
+                                return RedirectToAction("Index");
+                            }
+                            else
+                            {
+                                foreach (var error in result.Errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error.Description);
+                                }
+                            }
                         }
                     }
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
                 }
             }
-
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public async Task<IActionResult> Delete(string id)
         {
-            User user = await manager.FindByIdAsync(id);
-
-            if (user == null)
-                return NotFound();
-
-            UsersViewModel model = new UsersViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                Entity = user,
-                DeleteViewModel = new DeleteViewModel
-                {
-                    Message = "Do you want to delete this user?",
-                    IsDeleted = true
-                }
-            };
+                var currentUser = manager.GetUserAsync(User).Result;
 
-            return View(model);
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
+                {
+                    User user = await manager.FindByIdAsync(id);
+
+                    if (user == null)
+                        return NotFound();
+
+                    UsersViewModel model = new UsersViewModel
+                    {
+                        Entity = user,
+                        DeleteViewModel = new DeleteViewModel
+                        {
+                            Message = "Do you want to delete this user?",
+                            IsDeleted = true
+                        }
+                    };
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(UsersViewModel model)
         {
-            User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
-
-            if (user == null)
-                return NotFound();
-
-            var result = await manager.DeleteAsync(user);
-
-            if (result.Succeeded)
+            if (User.Identity.IsAuthenticated)
             {
-                model.DeleteViewModel.IsDeleted = false;
+                var currentUser = manager.GetUserAsync(User).Result;
 
-                if (User.Identity.IsAuthenticated & User.Identity.Name == user.UserName)
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
                 {
-                    await inManager.SignOutAsync();
-                    return RedirectToAction("Index", "Home");
+                    User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
+
+                    if (user == null)
+                        return NotFound();
+
+                    var result = await manager.DeleteAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        model.DeleteViewModel.IsDeleted = false;
+
+                        if (User.Identity.IsAuthenticated & User.Identity.Name == user.UserName)
+                        {
+                            await inManager.SignOutAsync();
+                            return RedirectToAction("Index", "Home");
+                        }
+
+                        return View(model);
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
+                    model.DeleteViewModel.IsDeleted = true;
+                    return View(model);
                 }
 
-                return View(model);
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                return RedirectToAction("Index", "Home");
             }
-
-            model.DeleteViewModel.IsDeleted = true;
-            return View(model);
         }
 
         public async Task<IActionResult> ChangePassword(string id)
         {
-            User user = await manager.FindByIdAsync(id);
-
-            if (user == null)
-                return NotFound();
-
-            UsersViewModel model = new UsersViewModel
+            if (User.Identity.IsAuthenticated)
             {
-                Entity = user
-            };
+                var currentUser = manager.GetUserAsync(User).Result;
 
-            return View(model);
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
+                {
+                    User user = await manager.FindByIdAsync(id);
+
+                    if (user == null)
+                        return NotFound();
+
+                    UsersViewModel model = new UsersViewModel
+                    {
+                        Entity = user
+                    };
+
+                    return View(model);
+                }
+
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangePassword(UsersViewModel model)
         {
-            if (ModelState.IsValid)
+            if (User.Identity.IsAuthenticated)
             {
-                User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
+                var currentUser = manager.GetUserAsync(User).Result;
 
-                if (user == null)
-                    return NotFound();
-
-                var result = await manager.ChangePasswordAsync(user, model.Password, model.NewPassword);
-
-                if (result.Succeeded)
+                // Проверка наличия роли Admin у текущего пользователя
+                if (manager.IsInRoleAsync(currentUser, "Admin").Result)
                 {
-                    return RedirectToAction("Index");
+                    if (ModelState.IsValid)
+                    {
+                        User user = await manager.FindByIdAsync(model.Entity.Id.ToString());
+
+                        if (user == null)
+                            return NotFound();
+
+                        var result = await manager.ChangePasswordAsync(user, model.Password, model.NewPassword);
+
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            foreach (var error in result.Errors)
+                                ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+
+                    return View(model);
                 }
+
                 else
                 {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError(string.Empty, error.Description);
+                    return RedirectToAction("Index", "Home");
                 }
             }
-
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         private bool CheckUniqueValues(User user)

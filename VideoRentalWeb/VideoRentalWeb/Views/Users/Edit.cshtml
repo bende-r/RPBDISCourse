@@ -1,5 +1,6 @@
 ﻿@model VideoRentalWeb.Models.Entities.UsersViewModel
-
+@if (User.Identity.IsAuthenticated)
+{
 <form method="post" class="container text-center w-50">
     <h2>Edit</h2>
 
@@ -22,4 +23,8 @@
     <p>
         <a asp-action="Index" class="btn btn-danger w-75">Back</a>
     </p>
-</form>
+</form>  }
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}

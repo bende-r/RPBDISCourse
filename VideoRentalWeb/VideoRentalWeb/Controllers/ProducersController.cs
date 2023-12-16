@@ -32,39 +32,46 @@ public class ProducersController : Controller
 
     public IActionResult Index(SortState sortState = SortState.ManufacturerAsc, int page = 1)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            ProducersFilterViewModel filter = HttpContext.Session.Get<ProducersFilterViewModel>(FilterKey);
-            if (filter == null)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                filter = new ProducersFilterViewModel() { Manufacturer = string.Empty };
-                HttpContext.Session.Set(FilterKey, filter);
+                ProducersFilterViewModel filter = HttpContext.Session.Get<ProducersFilterViewModel>(FilterKey);
+                if (filter == null)
+                {
+                    filter = new ProducersFilterViewModel() { Manufacturer = string.Empty };
+                    HttpContext.Session.Set(FilterKey, filter);
+                }
+
+                string modelKey = $"{typeof(Producer).Name}-{page}-{sortState}-{filter.Manufacturer}";
+                if (!_cache.TryGetValue(modelKey, out ProducersViewModel model))
+                {
+                    model = new ProducersViewModel();
+
+                    IQueryable<Producer> producers = GetSortedEntities(sortState, filter.Manufacturer);
+
+                    int count = producers.Count();
+                    int pageSize = 10;
+                    model.PageViewModel = new PageViewModel(page, count, pageSize);
+
+                    model.Entities = count == 0 ? new List<Producer>() : producers.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
+                    model.SortViewModel = new SortViewModel(sortState);
+                    model.ProducersFilterViewModel = filter;
+
+                    _cache.Set(modelKey, model);
+                }
+
+                return View(model);
             }
 
-            string modelKey = $"{typeof(Producer).Name}-{page}-{sortState}-{filter.Manufacturer}";
-            if (!_cache.TryGetValue(modelKey, out ProducersViewModel model))
+            else
             {
-                model = new ProducersViewModel();
-
-                IQueryable<Producer> producers = GetSortedEntities(sortState, filter.Manufacturer);
-
-                int count = producers.Count();
-                int pageSize = 10;
-                model.PageViewModel = new PageViewModel(page, count, pageSize);
-
-                model.Entities = count == 0 ? new List<Producer>() : producers.Skip((model.PageViewModel.CurrentPage - 1) * pageSize).Take(pageSize).ToList();
-                model.SortViewModel = new SortViewModel(sortState);
-                model.ProducersFilterViewModel = filter;
-
-                _cache.Set(modelKey, model);
+                return RedirectToAction("Index", "Producers");
             }
-
-            return View(model);
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -74,23 +81,30 @@ public class ProducersController : Controller
     [HttpPost]
     public IActionResult Index(ProducersFilterViewModel filterModel, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            ProducersFilterViewModel filter = HttpContext.Session.Get<ProducersFilterViewModel>(FilterKey);
-            if (filter != null)
-            {
-                filter.Manufacturer = filterModel.Manufacturer;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                HttpContext.Session.Remove(FilterKey);
-                HttpContext.Session.Set(FilterKey, filter);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                ProducersFilterViewModel filter = HttpContext.Session.Get<ProducersFilterViewModel>(FilterKey);
+                if (filter != null)
+                {
+                    filter.Manufacturer = filterModel.Manufacturer;
+
+                    HttpContext.Session.Remove(FilterKey);
+                    HttpContext.Session.Set(FilterKey, filter);
+                }
+
+                return RedirectToAction("Index", new { page });
             }
 
-            return RedirectToAction("Index", new { page });
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -99,19 +113,26 @@ public class ProducersController : Controller
 
     public IActionResult Create(int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            ProducersViewModel model = new ProducersViewModel()
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                PageViewModel = new PageViewModel { CurrentPage = page }
-            };
+                ProducersViewModel model = new ProducersViewModel()
+                {
+                    PageViewModel = new PageViewModel { CurrentPage = page }
+                };
 
-            return View(model);
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -121,24 +142,31 @@ public class ProducersController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(ProducersViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                await _db.Producers.AddAsync(model.Entity);
-                await _db.SaveChangesAsync();
+                if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+                {
+                    await _db.Producers.AddAsync(model.Entity);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Producers");
+                    return RedirectToAction("Index", "Producers");
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -147,24 +175,31 @@ public class ProducersController : Controller
 
     public async Task<IActionResult> Edit(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Producer producer = await _db.Producers.FindAsync(id);
-            if (producer != null)
-            {
-                ProducersViewModel model = new ProducersViewModel();
-                model.PageViewModel = new PageViewModel { CurrentPage = page };
-                model.Entity = producer;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Producer producer = await _db.Producers.FindAsync(id);
+                if (producer != null)
+                {
+                    ProducersViewModel model = new ProducersViewModel();
+                    model.PageViewModel = new PageViewModel { CurrentPage = page };
+                    model.Entity = producer;
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -174,35 +209,42 @@ public class ProducersController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(ProducersViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Producer producer = _db.Producers.Find(model.Entity.ProduceId);
-                if (producer != null)
+                if (ModelState.IsValid & CheckUniqueValues(model.Entity))
                 {
-                    producer.Manufacturer = model.Entity.Manufacturer;
-                    producer.Country = model.Entity.Country;
+                    Producer producer = _db.Producers.Find(model.Entity.ProduceId);
+                    if (producer != null)
+                    {
+                        producer.Manufacturer = model.Entity.Manufacturer;
+                        producer.Country = model.Entity.Country;
 
-                    _db.Producers.Update(producer);
-                    await _db.SaveChangesAsync();
+                        _db.Producers.Update(producer);
+                        await _db.SaveChangesAsync();
 
-                    _cache.Clean();
+                        _cache.Clean();
 
-                    return RedirectToAction("Index", "Producers", new { page = model.PageViewModel.CurrentPage });
+                        return RedirectToAction("Index", "Producers", new { page = model.PageViewModel.CurrentPage });
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
-                else
-                {
-                    return NotFound();
-                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -211,29 +253,36 @@ public class ProducersController : Controller
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Producer producer = await _db.Producers.FindAsync(id);
-            if (producer == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            bool deleteFlag = false;
-            string message = "Do you want to delete this entity";
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Producer producer = await _db.Producers.FindAsync(id);
+                if (producer == null)
+                    return NotFound();
 
-            if (_db.Disks.Any(s => s.Producer == producer.ProduceId))
-                message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
+                bool deleteFlag = false;
+                string message = "Do you want to delete this entity";
 
-            ProducersViewModel model = new ProducersViewModel();
-            model.Entity = producer;
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+                if (_db.Disks.Any(s => s.Producer == producer.ProduceId))
+                    message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
 
-            return View(model);
+                ProducersViewModel model = new ProducersViewModel();
+                model.Entity = producer;
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Producers");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -243,18 +292,25 @@ public class ProducersController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(ProducersViewModel model)
     {
-        Producer producer = await _db.Producers.FindAsync(model.Entity.ProduceId);
-        if (producer == null)
-            return NotFound();
+        if (User.Identity.IsAuthenticated)
+        {
+            Producer producer = await _db.Producers.FindAsync(model.Entity.ProduceId);
+            if (producer == null)
+                return NotFound();
 
-        _db.Producers.Remove(producer);
-        await _db.SaveChangesAsync();
+            _db.Producers.Remove(producer);
+            await _db.SaveChangesAsync();
 
-        _cache.Clean();
+            _cache.Clean();
 
-        model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
 
-        return View(model);
+            return View(model);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     private bool CheckUniqueValues(Producer producer)

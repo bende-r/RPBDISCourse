@@ -18,6 +18,7 @@ public class DisksController : Controller
 
     private const string FilterKey = "disks";
     private readonly UserManager<User> _userManager;
+
     public DisksController(UserManager<User> userManager, VideoRentalContext context, CacheProvider cacheProvider)
     {
         _db = context;
@@ -72,17 +73,24 @@ public class DisksController : Controller
 
     public IActionResult Create(int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            DiskViewModel model = new DiskViewModel(_db.Producers.ToList(), _db.Genres.ToList(), _db.Types.ToList())
-            {
-                PageViewModel = new PageViewModel { CurrentPage = page }
-            };
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                DiskViewModel model = new DiskViewModel(_db.Producers.ToList(), _db.Genres.ToList(), _db.Types.ToList())
+                {
+                    PageViewModel = new PageViewModel { CurrentPage = page }
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
         else
         {
@@ -93,40 +101,47 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(DiskViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            if (ModelState.IsValid)
+            var currentUser = _userManager.GetUserAsync(User).Result;
+
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Disk newDisk = new Disk()
+                if (ModelState.IsValid)
                 {
-                    Title = model.
-                        Title,
-                    CreationYear = model.CreationYear,
+                    Disk newDisk = new Disk()
+                    {
+                        Title = model.
+                            Title,
+                        CreationYear = model.CreationYear,
 
-                    Producer = model.ProducerId,
+                        Producer = model.ProducerId,
 
-                    MainActor = model.MainActor,
+                        MainActor = model.MainActor,
 
-                    Recording = model.Recording,
-                    GenreId = model.GenreId,
-                    DiskType = model.TypeId,
-                };
+                        Recording = model.Recording,
+                        GenreId = model.GenreId,
+                        DiskType = model.TypeId,
+                    };
 
 
-                await _db.Disks.AddAsync(newDisk);
-                await _db.SaveChangesAsync();
+                    await _db.Disks.AddAsync(newDisk);
+                    await _db.SaveChangesAsync();
 
-                _cache.Clean();
+                    _cache.Clean();
 
-                return RedirectToAction("Index", "Disks");
+                    return RedirectToAction("Index", "Disks");
+                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -135,36 +150,43 @@ public class DisksController : Controller
 
     public async Task<IActionResult> Edit(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Disk disk = await _db.Disks.FindAsync(id);
-            if (disk != null)
-            {
-                DiskViewModel model = new DiskViewModel()
-                {
-                    Genres = new SelectList(_db.Genres.ToList(), "GenreId", "Title", disk.Genre.Title),
-                    Producers = new SelectList(_db.Producers.ToList(), "ProduceId", "Manufacturer", disk.ProducerNavigation.Manufacturer),
-                    Types = new SelectList(_db.Types.ToList(), "TypeId", "Title", disk.DiskTypeNavigation.Title),
-                };
-                model.DiskId = id;
-                model.PageViewModel = new PageViewModel { CurrentPage = page };
-                model.Title = disk.Title;
-                model.CreationYear = disk.CreationYear;
-                model.ProducerId = disk.Producer;
-                model.MainActor = disk.MainActor;
-                model.Recording = disk.Recording;
-                model.GenreId = disk.GenreId;
-                model.TypeId = disk.DiskType;
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-                return View(model);
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Disk disk = await _db.Disks.FindAsync(id);
+                if (disk != null)
+                {
+                    DiskViewModel model = new DiskViewModel()
+                    {
+                        Genres = new SelectList(_db.Genres.ToList(), "GenreId", "Title", disk.Genre.Title),
+                        Producers = new SelectList(_db.Producers.ToList(), "ProduceId", "Manufacturer", disk.ProducerNavigation.Manufacturer),
+                        Types = new SelectList(_db.Types.ToList(), "TypeId", "Title", disk.DiskTypeNavigation.Title),
+                    };
+                    model.DiskId = id;
+                    model.PageViewModel = new PageViewModel { CurrentPage = page };
+                    model.Title = disk.Title;
+                    model.CreationYear = disk.CreationYear;
+                    model.ProducerId = disk.Producer;
+                    model.MainActor = disk.MainActor;
+                    model.Recording = disk.Recording;
+                    model.GenreId = disk.GenreId;
+                    model.TypeId = disk.DiskType;
+
+                    return View(model);
+                }
+
+                return NotFound();
             }
 
-            return NotFound();
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -174,41 +196,48 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(DiskViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            if (ModelState.IsValid)
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                Disk disk = _db.Disks.Find(model.DiskId);
-                if (disk != null)
+
+                if (ModelState.IsValid)
                 {
-                    disk.Title = model.Title;
-                    disk.CreationYear = model.CreationYear;
-                    disk.Producer = model.ProducerId;
-                    disk.MainActor = model.MainActor;
-                    disk.Recording = model.Recording;
-                    disk.GenreId = model.GenreId;
-                    disk.DiskType = model.TypeId;
+                    Disk disk = _db.Disks.Find(model.DiskId);
+                    if (disk != null)
+                    {
+                        disk.Title = model.Title;
+                        disk.CreationYear = model.CreationYear;
+                        disk.Producer = model.ProducerId;
+                        disk.MainActor = model.MainActor;
+                        disk.Recording = model.Recording;
+                        disk.GenreId = model.GenreId;
+                        disk.DiskType = model.TypeId;
 
-                    _db.Disks.Update(disk);
-                    await _db.SaveChangesAsync();
+                        _db.Disks.Update(disk);
+                        await _db.SaveChangesAsync();
 
-                    _cache.Clean();
+                        _cache.Clean();
 
-                    return RedirectToAction("Index", "Disks", new { page = model.PageViewModel.CurrentPage });
+                        return RedirectToAction("Index", "Disks", new { page = model.PageViewModel.CurrentPage });
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
-                else
-                {
-                    return NotFound();
-                }
+
+                return View(model);
             }
 
-            return View(model);
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -217,29 +246,36 @@ public class DisksController : Controller
 
     public async Task<IActionResult> Delete(int id, int page)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Disk disk = await _db.Disks.FindAsync(id);
-            if (disk == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            bool deleteFlag = false;
-            string message = "Do you want to delete this entity";
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Disk disk = await _db.Disks.FindAsync(id);
+                if (disk == null)
+                    return NotFound();
 
-            if (_db.Disks.Any(s => s.DiskId == disk.DiskId))
-                message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
+                bool deleteFlag = false;
+                string message = "Do you want to delete this entity";
 
-            DiskViewModel model = new DiskViewModel();
-            model.Entity = disk;
-            model.PageViewModel = new PageViewModel { CurrentPage = page };
-            model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+                if (_db.Disks.Any(s => s.DiskId == disk.DiskId))
+                    message = "This entity has entities, which dependents from this. Do you want to delete this entity and other, which dependents from this?";
 
-            return View(model);
+                DiskViewModel model = new DiskViewModel();
+                model.Entity = disk;
+                model.PageViewModel = new PageViewModel { CurrentPage = page };
+                model.DeleteViewModel = new DeleteViewModel { Message = message, IsDeleted = deleteFlag };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -249,25 +285,32 @@ public class DisksController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(DiskViewModel model)
     {
-        var currentUser = _userManager.GetUserAsync(User).Result;
-
-        // Проверка наличия роли Admin у текущего пользователя
-        if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+        if (User.Identity.IsAuthenticated)
         {
-            Disk disk = await _db.Disks.FindAsync(model.Entity.DiskId);
-            if (disk == null)
-                return NotFound();
+            var currentUser = _userManager.GetUserAsync(User).Result;
 
-            _db.Disks.Remove(disk);
-            await _db.SaveChangesAsync();
+            // Проверка наличия роли Admin у текущего пользователя
+            if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
+            {
+                Disk disk = await _db.Disks.FindAsync(model.Entity.DiskId);
+                if (disk == null)
+                    return NotFound();
 
-            _cache.Clean();
+                _db.Disks.Remove(disk);
+                await _db.SaveChangesAsync();
 
-            model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+                _cache.Clean();
 
-            return View(model);
+                model.DeleteViewModel = new DeleteViewModel { Message = "The entity was successfully deleted.", IsDeleted = true };
+
+                return View(model);
+            }
+
+            else
+            {
+                return RedirectToAction("Index", "Disks");
+            }
         }
-
         else
         {
             return RedirectToAction("Index", "Home");
@@ -276,25 +319,32 @@ public class DisksController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        Disk disk = await _db.Disks.FindAsync(id);
-        if (disk != null)
+        if (User.Identity.IsAuthenticated)
         {
-            Disk disk1 = disk;
-            disk1.Genre = _db.Genres.FirstOrDefault(genre => genre.GenreId == disk1.GenreId);
-            disk1.DiskTypeNavigation = _db.Types.FirstOrDefault(type => type.TypeId == disk1.DiskType);
-            disk1.ProducerNavigation = _db.Producers.FirstOrDefault(producer => producer.ProduceId == disk1.Producer);
-
-            DiskViewModel model = new DiskViewModel()
+            Disk disk = await _db.Disks.FindAsync(id);
+            if (disk != null)
             {
-                Entity = disk1,
+                Disk disk1 = disk;
+                disk1.Genre = _db.Genres.FirstOrDefault(genre => genre.GenreId == disk1.GenreId);
+                disk1.DiskTypeNavigation = _db.Types.FirstOrDefault(type => type.TypeId == disk1.DiskType);
+                disk1.ProducerNavigation = _db.Producers.FirstOrDefault(producer => producer.ProduceId == disk1.Producer);
 
-                PageViewModel = new PageViewModel()
-            };
+                DiskViewModel model = new DiskViewModel()
+                {
+                    Entity = disk1,
 
-            return View(model);
+                    PageViewModel = new PageViewModel()
+                };
+
+                return View(model);
+            }
+
+            return NotFound();
         }
-
-        return NotFound();
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     private IQueryable<Disk> GetSortedEntities(SortState sortState, string title)

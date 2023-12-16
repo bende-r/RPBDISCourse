@@ -1,5 +1,6 @@
 ﻿@model RoleViewModel
-
+@if (User.Identity.IsAuthenticated)
+{
 <div class="container text-center w-50">
 
     <h2>
@@ -26,13 +27,21 @@
         {
             <tr>
                 <td>@entity.Name</td>
-                <td class="text-center">
-                    <form asp-action="Delete" asp-route-name="@entity.Name" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
+                @if (!entity.Name.Equals("Admin"))
+                {
+                    <td class="text-center">
+                        <form asp-action="Delete" asp-route-name="@entity.Name" method="post">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                }
             </tr>
         }
         </tbody>
     </table>
 </div>
+}
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<VideoRentalWeb.DataModels.User>
-
+@if (User.Identity.IsAuthenticated)
+{
 <div class="container text-center w-50">
     
     <h2>User list</h2>
@@ -8,10 +9,15 @@
         {
             <tr>
                 <td>@user.Email</td>
+            
                 <td>
                     <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-userid="@user.Id">Manage acces</a>
                 </td>
             </tr>
         }
     </table>
-</div>
+</div>  }
+else
+{
+    <p>You are not logged in. Please <a href="/Account/Login">login</a>.</p>
+}
