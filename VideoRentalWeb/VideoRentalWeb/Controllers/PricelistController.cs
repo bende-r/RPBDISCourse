@@ -146,13 +146,20 @@ public class PricelistController : Controller
                             Price,
                     };
 
+                    if (CheckUniqueValues(p))
+                    {
 
-                    await _db.Pricelists.AddAsync(p);
-                    await _db.SaveChangesAsync();
+                        await _db.Pricelists.AddAsync(p);
+                        await _db.SaveChangesAsync();
 
-                    _cache.Clean();
+                        _cache.Clean();
 
-                    return RedirectToAction("Index", "Pricelist");
+                        return RedirectToAction("Index", "Pricelist");
+                    }
+                    else
+                    {
+                        return View(model);
+                    }
                 }
 
                 return View(model);
@@ -181,9 +188,12 @@ public class PricelistController : Controller
                 Pricelist pricelist = await _db.Pricelists.FindAsync(id);
                 if (pricelist != null)
                 {
-                    PricelistViewModel model = new PricelistViewModel();
+                    PricelistViewModel model = new PricelistViewModel(_db.Disks.ToList());
                     model.PageViewModel = new PageViewModel { CurrentPage = page };
-                    model.Entity = pricelist;
+
+                    model.PricelistId = id;
+                    model.Price = pricelist.Price;
+                    model.DiskId = pricelist.DiskId;
 
                     return View(model);
                 }
@@ -212,20 +222,34 @@ public class PricelistController : Controller
             // Проверка наличия роли Admin у текущего пользователя
             if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
-                if (ModelState.IsValid & CheckUniqueValues(model.Entity))
+                foreach (var entry in ModelState)
                 {
-                    Pricelist pricelist = _db.Pricelists.Find(model.Entity.PriceId);
+                    var key = entry.Key; // Название свойства
+                    var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+                    // Далее можно использовать key и errors в соответствии с вашими потребностями
+                    Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+                }
+                if (ModelState.IsValid)
+                {
+                    Pricelist pricelist = _db.Pricelists.Find(model.PricelistId);
                     if (pricelist != null)
                     {
-                        pricelist.Price = model.Entity.Price;
-                        pricelist.DiskId = model.Entity.DiskId;
+                        pricelist.Price = model.Price;
+                        pricelist.DiskId = model.DiskId;
 
-                        _db.Pricelists.Update(pricelist);
-                        await _db.SaveChangesAsync();
+                        if (CheckUniqueValues(pricelist))
+                        {
 
-                        _cache.Clean();
+                            _db.Pricelists.Update(pricelist);
+                            await _db.SaveChangesAsync();
 
-                        return RedirectToAction("Index", "Pricelist", new { page = model.PageViewModel.CurrentPage });
+                            _cache.Clean();
+
+                            return RedirectToAction("Index", "Pricelist",
+                                new { page = model.PageViewModel.CurrentPage });
+                        }
+                        else { return View(model); }
                     }
                     else
                     {

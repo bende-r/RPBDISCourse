@@ -115,6 +115,14 @@ public class TypesController : Controller
             // Проверка наличия роли Admin у текущего пользователя
             if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
+                foreach (var entry in ModelState)
+                {
+                    var key = entry.Key; // Название свойства
+                    var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+                    // Далее можно использовать key и errors в соответствии с вашими потребностями
+                    Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+                }
                 if (ModelState.IsValid & CheckUniqueValues(model.Entity))
                 {
                     await _db.Types.AddAsync(model.Entity);

@@ -24,6 +24,7 @@ namespace VideoRentalWeb.Models.Entities
         [Display(Name = "Price")]
         public Pricelist? Entity { get; set; }
 
+        public int PricelistId { get; set; }
         public int DiskId { get; set; }
         public decimal? Price { get; set; }
 
