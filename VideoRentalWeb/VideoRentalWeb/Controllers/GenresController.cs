@@ -113,6 +113,14 @@ public class GenresController : Controller
             // Проверка наличия роли Admin у текущего пользователя
             if (_userManager.IsInRoleAsync(currentUser, "Admin").Result || _userManager.IsInRoleAsync(currentUser, "Manager").Result)
             {
+                foreach (var entry in ModelState)
+                {
+                    var key = entry.Key; // Название свойства
+                    var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList(); // Список ошибок для свойства
+
+                    // Далее можно использовать key и errors в соответствии с вашими потребностями
+                    Console.WriteLine($"Property: {key}, Errors: {string.Join(", ", errors)}");
+                }
                 if (ModelState.IsValid & CheckUniqueValues(model.Entity))
                 {
                     await _db.Genres.AddAsync(model.Entity);
@@ -320,7 +328,7 @@ public class GenresController : Controller
         Genre tempgenre = _db.Genres.FirstOrDefault(g => g.Title == genre.Title);
         if (tempgenre != null)
         {
-            if (tempgenre.GenreId != tempgenre.GenreId)
+            if (tempgenre.GenreId != genre.GenreId)
             {
                 ModelState.AddModelError(string.Empty, "Another entity have this name. Please replace this to another.");
                 firstFlag = false;

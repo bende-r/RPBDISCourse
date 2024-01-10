@@ -9,7 +9,7 @@
     <form method="post">
         <div>
             <input hidden asp-for="PageViewModel.CurrentPage" value="@Model.PageViewModel.CurrentPage"/>
-            <input hidden asp-for="Entity.PriceId" value="@Model.Entity.PriceId"/>
+            <input hidden asp-for="PricelistId" value="@Model.PricelistId"/>
         </div>
 
         <h2>Edit entity</h2>
@@ -24,10 +24,10 @@
         </p> 
 
         <p>
-                <label asp-for="Entity.Price"></label><br />
-                <input asp-for="Entity.Price" class="w-75" />
+                <label asp-for="Price"></label><br />
+                <input asp-for="Price" class="w-75" />
         <p>
-            <span asp-validation-for="Entity.Price" class="text-danger"></span>
+            <span asp-validation-for="Price" class="text-danger"></span>
         </p>
 
         <p>

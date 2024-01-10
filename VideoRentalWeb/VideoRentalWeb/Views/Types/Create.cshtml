@@ -17,9 +17,14 @@
         <div asp-validation-summary="ModelOnly" class="text-danger text-justify w-100 m-lg-0"></div>
 
         <p>
-        <label asp-for="Entity.TypeId"></label><br/>
-        <input asp-for="Entity.TypeId" class="w-75"/>
+        <label asp-for="Entity.Title"></label><br/>
+        <input asp-for="Entity.Title" class="w-75"/>
         <p><span asp-validation-for="Entity.Title" class="text-danger"></span></p>
+        
+        <p>
+        <label asp-for="Entity.Description"></label><br/>
+        <input asp-for="Entity.Description" class="w-75"/>
+        <p><span asp-validation-for="Entity.Description" class="text-danger"></span></p>
 
         <p>
         <input type="submit" value="Add" class="btn btn-success w-75"/>

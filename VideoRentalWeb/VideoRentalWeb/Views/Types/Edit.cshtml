@@ -21,7 +21,10 @@
         <input asp-for="Entity.Title" class="w-75"/>
         <p><span asp-validation-for="Entity.Title" class="text-danger"></span></p>
 
-
+        <p>
+        <label asp-for="Entity.Description"></label><br/>
+        <input asp-for="Entity.Description" class="w-75"/>
+        <p><span asp-validation-for="Entity.Description" class="text-danger"></span></p>
         <p>
         <input type="submit" value="Save" class="btn btn-success w-75"/>
         <p><a asp-action="Index" asp-route-page="@Model.PageViewModel.CurrentPage" class="btn btn-danger w-75">Back</a></p>
